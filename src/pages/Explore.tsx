@@ -1,16 +1,12 @@
-import { useEffect, useState } from 'react';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { useState } from 'react';
+import { collection } from 'firebase/firestore';
 import { db } from '../utils/firebaseConfig';
-
-type User = {
-  displayName: string;
-  photoURL: string;
-  email: string;
-};
+import { useCollection } from 'react-firebase-hooks/firestore';
+import { Link } from 'react-router-dom';
 
 const Explore = () => {
   const [username, setUsername] = useState('');
-  const [users, setUsers] = useState<User[]>();
+  const [value, loading, error] = useCollection(collection(db, 'users'));
 
   // const searchUser = async () => {
   //   const usersRef = collection(db, 'users');
@@ -32,33 +28,17 @@ const Explore = () => {
   //   e.code === 'Enter' && searchUser();
   // };
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const usersRef = collection(db, 'users');
-        const q = query(usersRef);
-        const querySnapshot = await getDocs(q);
-        let usersList: User[] = [];
-        querySnapshot.forEach((doc) => {
-          // doc.data() is never undefined for query doc snapshots
-          const { displayName, email, photoURL } = doc.data();
-          usersList.push({
-            displayName,
-            email,
-            photoURL,
-          });
-        });
-        setUsers(usersList);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchUsers();
-  }, []);
+  if (error) {
+    return <strong>Error: {JSON.stringify(error)}</strong>;
+  }
+
+  if (loading) {
+    return <span>Collection: Loading...</span>;
+  }
 
   return (
-    <div className='mx-auto max-w-[360px]'>
-      <h1 className='text-xl mt-8 my-4 font-semibold'>
+    <div className='mx-auto max-w-[360px] min-h-[80vh] flex flex-col'>
+      <h1 className='text-xl my-4 mb-2 md:mt-8 font-semibold'>
         Add Peoples you want to chat
       </h1>
       {/* <input
@@ -70,6 +50,39 @@ const Explore = () => {
         placeholder='Type a name and press enter'
         className='block w-full p-2 rounded-md border border-gray-300 outline-none focus:border-blue-600'
       /> */}
+
+      {value && (
+        <>
+          {value.docs.map((doc) => (
+            <div
+              key={doc.id}
+              className='my-2 flex items-center justify-between'
+            >
+              <div className='flex items-center gap-4'>
+                <img
+                  src={doc.data().photoURL}
+                  alt=''
+                  className='w-8 h-8 rounded-full'
+                />
+
+                <h3 className='text-base font-semibold'>
+                  {doc.data().displayName}
+                </h3>
+              </div>
+              <button className='bg-blue-600 p-2 uppercase px-8 text-sm rounded-md text-white'>
+                Add
+              </button>
+            </div>
+          ))}
+        </>
+      )}
+
+      <Link
+        to='/chats'
+        className='w-fit mx-auto mt-auto bg-blue-600 p-2 uppercase px-8 text-sm rounded-md text-white'
+      >
+        Let's go{' '}
+      </Link>
     </div>
   );
 };
