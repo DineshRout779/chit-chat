@@ -26,7 +26,7 @@ const Navbar = () => {
     <div className='flex justify-between items-center p-3 rounded-md bg-gray-100'>
       <Link
         to='/chats'
-        className='text-base md:text-xl ml-2  p-1 md:p-2 text-blue-800'
+        className='text-base font-semibold md:text-xl ml-2  p-1 md:p-2 text-blue-800'
       >
         ChitChat
       </Link>
