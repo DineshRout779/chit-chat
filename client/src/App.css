@@ -5,17 +5,19 @@
 
 .chat-history::-webkit-scrollbar {
   width: 8px; /* Adjust width as desired */
+  border-radius: 4px;
 }
 
 .chat-history::-webkit-scrollbar-track {
   background: #f5f5f5; /* Background color of the scrollbar track */
+  border-radius: 4px;
 }
 
 .chat-history::-webkit-scrollbar-thumb {
-  background: #ccc; /* Background color of the scrollbar thumb */
+  background: #c7cef6; /* Background color of the scrollbar thumb */
   border-radius: 5px; /* Add rounded corners */
 }
 
 .chat-history::-webkit-scrollbar-thumb:hover {
-  background: #999; /* Change color on hover for better visibility */
+  background: #968df5; /* Change color on hover for better visibility */
 }
