@@ -6,6 +6,7 @@ const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messageRoute');
 const connectDB = require('./configs/db');
 
+// app initialization
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
@@ -14,14 +15,18 @@ const io = new Server(server, {
   },
 });
 
+// setup middlewares
 app.use(express.json());
 app.use(cors());
 
+// Database connection
 connectDB();
 
+// routes
 app.use('/auth', userRoutes);
 app.use('/messages', messageRoutes);
 
+// socket transmission
 io.on('connection', (socket) => {
   console.log('User connected ✅');
 
