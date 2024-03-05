@@ -19,6 +19,14 @@ const Login = () => {
     });
   };
 
+  const getGuestCredentials = () => {
+    setValues({
+      ...values,
+      username: 'dinesh',
+      password: '12345',
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -48,16 +56,18 @@ const Login = () => {
             id='username'
             value={username}
             onChange={handleInputChange}
-            className='block my-4 border p-2 w-full border-gray-200 rounded-md'
+            className='py-3 px-4 my-4 block w-full border outline-none border-gray-500 rounded-md text-sm focus:border-blue-500  disabled:opacity-50 disabled:pointer-events-none dark:bg-zinc-900 dark:border-gray-700 dark:text-gray-400 dark:focus:border-gray-600'
             placeholder='Enter username'
           />
+
+          {/* password */}
           <input
             type='password'
             name='password'
             id='password'
             value={password}
             onChange={handleInputChange}
-            className='block my-4 border p-2 w-full border-gray-200 rounded-md'
+            className='py-3 px-4 my-4 block w-full border outline-none border-gray-500 rounded-md text-sm focus:border-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-zinc-900 dark:border-gray-700 dark:text-gray-400 dark:focus:border-gray-600'
             placeholder='Enter password'
           />
           <button
@@ -65,6 +75,13 @@ const Login = () => {
             className='block p-2 my-4 w-full rounded-md bg-blue-600 text-white'
           >
             Login
+          </button>
+          <button
+            type='button'
+            onClick={getGuestCredentials}
+            className='block p-2 my-4 w-full rounded-md bg-gray-400 dark:bg-zinc-600 text-white'
+          >
+            Login as guest
           </button>
         </form>
         <p>
