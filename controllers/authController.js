@@ -39,7 +39,7 @@ async function signup(req, res) {
     // generate jwt token
     const token = jwt.sign(
       {
-        id: newUser._id,
+        _id: newUser._id,
       },
       process.env.JWT_SECRET
     );
@@ -78,7 +78,7 @@ async function login(req, res) {
     // generate jwt token
     const token = jwt.sign(
       {
-        id: user._id,
+        _id: user._id,
       },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
@@ -90,6 +90,27 @@ async function login(req, res) {
     });
   } catch (error) {
     console.log('Error in the login controller: ', error);
+    return res.status(500).json({
+      message: 'Server error',
+      error: error.message,
+    });
+  }
+}
+
+/**
+ * Login handler
+ * @param {Object} req - Request object containing username and password
+ * @param {Object} res - Response object containing user data or an error message
+ * @returns {Object} - Response object with user data or an error message
+ */
+async function getLoggedInUser(req, res) {
+  try {
+    return res.status(200).send({
+      message: 'User fetched successfully',
+      user: req.user,
+    });
+  } catch (error) {
+    console.log('Error in getting loggedin user: ', error);
     return res.status(500).json({
       message: 'Server error',
       error: error.message,
@@ -221,4 +242,11 @@ async function resetPassword(req, res) {
   }
 }
 
-module.exports = { signup, login, forgetPassword, verifyOTP, resetPassword };
+module.exports = {
+  signup,
+  login,
+  getLoggedInUser,
+  forgetPassword,
+  verifyOTP,
+  resetPassword,
+};

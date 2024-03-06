@@ -34,7 +34,7 @@ const Login = () => {
     try {
       const res = await apiClient.post('/auth/login', values);
       if (res.status === 200) {
-        loginUser(res.data.user);
+        loginUser(res.data.token);
       }
     } catch (error) {
       console.log(error.response);
@@ -42,8 +42,8 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (state.user) navigate('/chat');
-  }, [navigate, state.user]);
+    if (state.token) navigate('/chat');
+  }, [navigate, state.token]);
 
   return (
     <div className='flex justify-center items-center'>

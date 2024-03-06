@@ -10,6 +10,7 @@ const actionTypes = {
   // auth related
   LOGIN: 'LOGIN',
   LOGOUT: 'LOGOUT',
+  STORE_USER: 'STORE_USER',
 };
 
 export default actionTypes;
