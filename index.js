@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messageRoute');
 const connectDB = require('./configs/db');
 
@@ -29,6 +30,7 @@ connectDB();
 
 // routes
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
 
 // socket transmission
