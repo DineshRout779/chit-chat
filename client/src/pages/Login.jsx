@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import apiClient from '../services/apiClient';
 
 const Login = () => {
   const { state, loginUser } = useAuth();
@@ -32,7 +32,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post('http://localhost:3000/auth/login', values);
+      const res = await apiClient.post('/auth/login', values);
       if (res.status === 200) {
         loginUser(res.data.user);
       }
