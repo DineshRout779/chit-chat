@@ -1,9 +1,10 @@
-import { faker } from '@faker-js/faker';
+// import { faker } from '@faker-js/faker';
 import { FunnelSimple, Plus } from 'phosphor-react';
 
 const ChatList = () => {
+  // const {state:{chats}} = use
   return (
-    <div className='basis-1 md:basis-5/12 lg:basis-4/12 border-r border-gray-200 dark:border-r-zinc-800 px-4 bg-white/90 dark:bg-black/75 backdrop-blur-3xl'>
+    <div className='w-full md:basis-5/12 lg:basis-4/12 border-r border-gray-200 dark:border-r-zinc-800 px-4 bg-white/90 dark:bg-black/75 backdrop-blur-3xl'>
       {/* header */}
       <div className='flex justify-between items-center my-4 '>
         <h2 className='text-zinc-900 dark:text-white'>Chats</h2>
@@ -27,16 +28,17 @@ const ChatList = () => {
 
       {/* chat list */}
       <div className='overflow-y-scroll h-[80vh] chat-history'>
-        <ul className='pr-2'>
+        {/* <ul className='pr-2'>
           {Array.from({ length: 20 }).map((_, i) => (
             <li
               key={i}
+              onClick={() => console.log('selected chat id: ', i)}
               className='cursor-pointer rounded-md my-2 hover:bg-gray-200 dark:hover:bg-zinc-800 flex w-full gap-4 bg-white dark:bg-zinc-900 p-4'
             >
               <div className='relative'>
                 <img
                   src={faker.image.avatar()}
-                  className='w-10 h-10 aspect-square rounded-full'
+                  className='w-10 aspect-square rounded-full'
                   alt={faker.person.fullName()}
                   loading='lazy'
                 />
@@ -54,7 +56,7 @@ const ChatList = () => {
               </div>
             </li>
           ))}
-        </ul>
+        </ul> */}
       </div>
     </div>
   );
