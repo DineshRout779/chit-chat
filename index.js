@@ -1,10 +1,14 @@
+const dotnev = require('dotenv');
 const express = require('express');
 const cors = require('cors');
+const morgan = require('morgan');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 const authRoutes = require('./routes/authRoutes');
 const messageRoutes = require('./routes/messageRoute');
 const connectDB = require('./configs/db');
+
+dotnev.config();
 
 // app initialization
 const app = express();
@@ -18,6 +22,7 @@ const io = new Server(server, {
 // setup middlewares
 app.use(express.json());
 app.use(cors());
+app.use(morgan('dev'));
 
 // Database connection
 connectDB();
