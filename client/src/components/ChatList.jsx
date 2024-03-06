@@ -1,14 +1,14 @@
 import { faker } from '@faker-js/faker';
-import { FunnelSimple, PencilSimple } from 'phosphor-react';
+import { FunnelSimple, Plus } from 'phosphor-react';
 
 const ChatList = () => {
   return (
-    <div className='basis-1 md:basis-5/12 lg:basis-4/12 border-r border-gray-200 dark:border-r-zinc-800 px-4 bg-white/90 dark:bg-black/75 backdrop-blur-md'>
+    <div className='basis-1 md:basis-5/12 lg:basis-4/12 border-r border-gray-200 dark:border-r-zinc-800 px-4 bg-white/90 dark:bg-black/75 backdrop-blur-3xl'>
       {/* header */}
       <div className='flex justify-between items-center my-4 '>
         <h2 className='text-zinc-900 dark:text-white'>Chats</h2>
         <button className='hover:bg-zinc-800 p-2 rounded-md'>
-          <PencilSimple className='text-blue-600' size={24} />
+          <Plus className='text-blue-400' size={24} />
         </button>
       </div>
 
@@ -21,7 +21,7 @@ const ChatList = () => {
           className='block w-full p-3 text-sm rounded-md bg-gray-200 dark:bg-zinc-800 dark:text-gray-200 border-zinc-800 outline-none focus:border-blue-600'
         />
         <button className='bg-gray-200 dark:bg-zinc-800 p-3 rounded-md'>
-          <FunnelSimple className='text-blue-600 text-start' />
+          <FunnelSimple className='text-blue-400 text-start' />
         </button>
       </div>
 
