@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import useSocket from '../hooks/useSocket';
 
 const SidebarHeader = () => {
-  const [isConnected, setIsConnected] = useState(true);
+  const {
+    state: { isConnected },
+  } = useSocket();
 
   return (
     <div className='p-4'>
