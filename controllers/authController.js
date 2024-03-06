@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken');
 const generateOTP = require('../utils/generateOtp');
 
 // store OTPs here
@@ -35,11 +36,17 @@ async function signup(req, res) {
 
     await newUser.save();
 
-    // TODO: Use jwt token
-    newUser.password = undefined;
+    // generate jwt token
+    const token = jwt.sign(
+      {
+        id: newUser._id,
+      },
+      process.env.JWT_SECRET
+    );
+
     return res.status(201).send({
       message: 'User created successfully',
-      user: newUser,
+      token,
     });
   } catch (error) {
     return res.status(500).send(error.message);
@@ -68,12 +75,18 @@ async function login(req, res) {
       return res.status(401).send('Invalid username or password');
     }
 
-    // TODO: use jwt token
-    user.password = undefined;
-    req.user = user;
+    // generate jwt token
+    const token = jwt.sign(
+      {
+        id: user._id,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
 
     return res.status(200).send({
-      user,
+      message: 'User loggedin successfully',
+      token,
     });
   } catch (error) {
     console.log('Error in the login controller: ', error);
@@ -111,6 +124,7 @@ async function forgetPassword(req, res) {
       },
     });
 
+    // TODO: store OTP for a limited time, then expire or delete it.
     storedOTPs[email] = generateOTP();
 
     const mailOptions = {
