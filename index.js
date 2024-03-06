@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
-const userRoutes = require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
 const messageRoutes = require('./routes/messageRoute');
 const connectDB = require('./configs/db');
 
@@ -23,8 +23,8 @@ app.use(cors());
 connectDB();
 
 // routes
-app.use('/auth', userRoutes);
-app.use('/messages', messageRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/messages', messageRoutes);
 
 // socket transmission
 io.on('connection', (socket) => {
