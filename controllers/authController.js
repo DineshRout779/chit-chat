@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const nodemailer = require('nodemailer');
-const { default: generateOTP } = require('../utils/generateOtp');
+const generateOTP = require('../utils/generateOtp');
 
 // store OTPs here
 const storedOTPs = {};
@@ -17,7 +17,7 @@ async function signup(req, res) {
     const { username, email, password } = req.body;
 
     // find user with the given username, if user exists ==> send error
-    const user = await User.find({ username });
+    const user = await User.findOne({ username });
     if (user) {
       return res.status(403).json({
         error: 'User already exists',
@@ -25,7 +25,8 @@ async function signup(req, res) {
     }
 
     // user does't exists ==> hash password and create new user
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
     const newUser = new User({
       username,
       email,
@@ -110,11 +111,13 @@ async function forgetPassword(req, res) {
       },
     });
 
+    storedOTPs[email] = generateOTP();
+
     const mailOptions = {
       from: process.env.APP_EMAIL,
       to: email,
       subject: 'Reset password | Chatty 💬',
-      text: `Your OTP to reset your password is ${generateOTP()}`,
+      text: `Your OTP to reset your password is ${storedOTPs[email]}`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -143,9 +146,65 @@ async function forgetPassword(req, res) {
   }
 }
 
-async function verifyPassword(req, res) {
+/**
+ * Verify One-Time Password (OTP) before allowing password change
+ * @param {*} req - Express request object containing OTP and email
+ * @param {*} res - Express response object to send the result of OTP verification
+ * @returns {Object} - Response object indicating success or failure of OTP verification
+ */
+async function verifyOTP(req, res) {
   try {
-  } catch (error) {}
+    const { otp, email } = req.body;
+
+    console.log('otps:', storedOTPs);
+    console.log('body:', req.body);
+
+    if (storedOTPs[email] && storedOTPs[email] === otp) {
+      return res.status(200).json({
+        success: true,
+        message: 'Verified, proceed to change password',
+      });
+    }
+    return res.status(400).json({
+      sucess: false,
+      message: 'Invalid OTP',
+    });
+  } catch (error) {
+    console.log('Error in verify password: ', error);
+    return res.status(500).json({
+      message: 'Server error',
+      error: error.message,
+    });
+  }
 }
 
-module.exports = { signup, login, forgetPassword };
+/**
+ * Reset user's password after OTP verification
+ * @param {*} req - Express request object containing email and new password
+ * @param {*} res - Express response object to send the result of password reset
+ * @returns {Object} - Response object indicating success or failure of password reset
+ */
+async function resetPassword(req, res) {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    user.password = hashedPassword;
+    await user.save();
+
+    return res.status(200).json({
+      message: 'Password reset successful',
+      success: true,
+    });
+  } catch (error) {
+    console.log('Error in reset password: ', error);
+    return res.status(500).json({
+      message: 'Server error',
+      error: error.message,
+    });
+  }
+}
+
+module.exports = { signup, login, forgetPassword, verifyOTP, resetPassword };
