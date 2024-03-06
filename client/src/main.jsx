@@ -5,8 +5,11 @@ import './index.css';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Login from './pages/Login.jsx';
 import Chat from './pages/Chat.jsx';
-import AuthContextProvider from './context/authContext.jsx';
 import Signup from './pages/Signup.jsx';
+import SocketProvider from './context/SocketContext.jsx';
+import AuthProvider from './context/AuthContext.jsx';
+import ChatProvider from './context/ChatContext.jsx';
+import ForgetPassword from './pages/ForgetPassword.jsx';
 
 const router = createBrowserRouter([
   {
@@ -16,6 +19,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Login />,
+      },
+      {
+        path: 'forget-password',
+        element: <ForgetPassword />,
       },
       {
         path: '/signup',
@@ -31,7 +38,11 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   // <React.StrictMode>
-  <AuthContextProvider>
-    <RouterProvider router={router} />
-  </AuthContextProvider> // </React.StrictMode>
+  <AuthProvider>
+    <SocketProvider>
+      <ChatProvider>
+        <RouterProvider router={router} />
+      </ChatProvider>
+    </SocketProvider>
+  </AuthProvider> // </React.StrictMode>
 );
