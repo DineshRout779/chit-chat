@@ -21,12 +21,4 @@ async function sendMessage(req, res) {
   }
 }
 
-// async function getAllMessages(req, res){
-//   try {
-//     const messages = await Message.find({})
-//   } catch (error) {
-
-//   }
-// }
-
 module.exports = { sendMessage };
