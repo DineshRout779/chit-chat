@@ -15,6 +15,7 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "mongoose": "^8.2.0",
+    "nodemailer": "^6.9.11",
     "socket.io": "^4.7.4"
   },
   "devDependencies": {
