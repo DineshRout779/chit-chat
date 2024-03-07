@@ -1,9 +1,5 @@
 import axios from 'axios';
-
-// Retrieve token from localStorage
-const getToken = () => {
-  return localStorage.getItem('token') || null;
-};
+import { getToken } from '../utils/token';
 
 // Set up API client
 const apiClient = axios.create({
