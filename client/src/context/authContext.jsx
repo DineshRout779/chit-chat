@@ -2,10 +2,11 @@
 import { createContext, useEffect, useReducer } from 'react';
 import actionTypes from '../constants/actionTypes';
 import apiClient from '../services/apiClient';
+import { getToken, isTokenExpired, removeToken } from '../utils/token';
 
 const intialState = {
   user: null,
-  token: localStorage.getItem('token') || null,
+  token: getToken() || null,
 };
 
 export const AuthContext = createContext(null);
@@ -41,7 +42,7 @@ export default function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    removeToken();
     dispatch({ type: actionTypes.LOGOUT });
   };
 
@@ -59,6 +60,18 @@ export default function AuthProvider({ children }) {
           console.log(error);
         }
       })();
+    }
+  }, [state.token]);
+
+  useEffect(() => {
+    console.log(state.token);
+    if (isTokenExpired(state.token)) {
+      console.log('Token expired! Please login');
+      logout();
+      if (window.location.pathname !== '/') {
+        // Redirect to the login page
+        window.location.href = '/';
+      }
     }
   }, [state.token]);
 
