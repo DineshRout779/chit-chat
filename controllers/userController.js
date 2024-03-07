@@ -8,7 +8,10 @@ const User = require('../models/User');
  */
 async function getAllUsers(req, res) {
   try {
-    const users = User.find({ _id: { $ne: req.user._id } });
+    const users = await User.find(
+      { _id: { $ne: req.user._id } },
+      '_id username profilePic'
+    );
 
     return res.status(200).json({
       success: true,

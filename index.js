@@ -7,6 +7,8 @@ const { Server } = require('socket.io');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messageRoute');
+const chatRoute = require('./routes/chatRoutes');
+
 const connectDB = require('./configs/db');
 
 dotnev.config();
@@ -32,6 +34,7 @@ connectDB();
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/chats', chatRoute);
 
 // socket transmission
 io.on('connection', (socket) => {

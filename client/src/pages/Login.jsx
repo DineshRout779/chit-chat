@@ -24,7 +24,7 @@ const Login = () => {
     setValues({
       ...values,
       username: 'dinesh',
-      password: '12345',
+      password: '7*#kDp9@LnF2!wT',
     });
   };
 

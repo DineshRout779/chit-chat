@@ -1,24 +1,63 @@
+const Chat = require('../models/Chat');
 const Message = require('../models/Message');
 
 async function sendMessage(req, res) {
   console.log('body:', req.body);
 
-  const { chatId, content } = req.body;
-
-  const newMessage = {
-    chat: chatId,
-    content,
-    sender: req.user._id,
-  };
-
-  const message = new Message(newMessage);
-
   try {
+    const { chatId, content } = req.body;
+
+    const newMessage = {
+      chatId,
+      content,
+      sender: req.user._id,
+    };
+
+    let message = new Message(newMessage);
     await message.save();
-    res.status(201).send('Message sent successfully');
+
+    message = await Message.findById(message._id).populate(
+      'sender',
+      '-password'
+    );
+
+    await Chat.findByIdAndUpdate(chatId, { latestMessage: message });
+
+    res.status(201).json({
+      success: true,
+      message,
+    });
   } catch (error) {
-    res.status(500).send(error.message);
+    console.log('Error while sending messages');
+    res.status(500).json({
+      message: 'Server error',
+      error: error.message,
+    });
   }
 }
 
-module.exports = { sendMessage };
+async function getAllMessagesByChatId(req, res) {
+  try {
+    const messages = await Message.find({ chatId: req.params.chatId }).populate(
+      'sender',
+      '_id profilePic'
+    );
+
+    if (!messages) {
+      throw Error('No Messages Found with the chatId: ', req.params.chatId);
+    }
+
+    return res.status(200).json({
+      success: true,
+      messages,
+    });
+  } catch (error) {
+    console.log('Error while getting all messages');
+    res.status(500).json({
+      message: 'Server error',
+      error: error.message,
+    });
+  }
+}
+
+module.exports = { sendMessage, getAllMessagesByChatId };
