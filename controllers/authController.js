@@ -41,7 +41,8 @@ async function signup(req, res) {
       {
         _id: newUser._id,
       },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
     );
 
     return res.status(201).send({
@@ -81,7 +82,7 @@ async function login(req, res) {
         _id: user._id,
       },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: '1d' }
     );
 
     return res.status(200).send({
