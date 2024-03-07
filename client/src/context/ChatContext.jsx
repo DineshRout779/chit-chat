@@ -2,6 +2,7 @@
 import { createContext, useEffect, useReducer } from 'react';
 import actionTypes from '../constants/actionTypes';
 import apiClient from '../services/apiClient';
+import { socket } from '../socket';
 
 const initialState = {
   selectedChat: null,
@@ -31,6 +32,11 @@ const chatReducers = (state, action) => {
         ...state,
         messages: action.payload,
       };
+    case actionTypes.NEW_MESSAGE:
+      return {
+        ...state,
+        messages: [...state.messages, action.payload],
+      };
     case actionTypes.LOADING:
       return {
         ...state,
@@ -52,6 +58,10 @@ const ChatProvider = ({ children }) => {
     dispatch({ type: actionTypes.SET_MESSAGES, payload: messages });
   };
 
+  const newMessage = (message) => {
+    dispatch({ type: actionTypes.NEW_MESSAGE, payload: message });
+  };
+
   const selectChat = (chatId) => {
     dispatch({ type: actionTypes.SELECT_CHAT, payload: { chatId } });
   };
@@ -64,6 +74,7 @@ const ChatProvider = ({ children }) => {
     dispatch({ type: actionTypes.LOADING, payload: false });
   };
 
+  // fetch chats
   useEffect(() => {
     (async () => {
       try {
@@ -89,15 +100,31 @@ const ChatProvider = ({ children }) => {
           );
 
           setMessages(res.data.messages);
+
+          socket.emit('joinChat', state.selectedChat._id);
         } catch (error) {
           console.log(error);
         }
       })();
   }, [state.selectedChat]);
 
+  useEffect(() => {
+    socket.on('message received', (newMsg) => {
+      console.log('message received', newMsg);
+      newMessage(newMsg);
+    });
+  }, []);
+
   return (
     <ChatContext.Provider
-      value={{ state, setChats, startLoading, stopLoading, selectChat }}
+      value={{
+        state,
+        setChats,
+        startLoading,
+        stopLoading,
+        selectChat,
+        newMessage,
+      }}
     >
       {children}
     </ChatContext.Provider>

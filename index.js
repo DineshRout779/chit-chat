@@ -8,9 +8,7 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messageRoute');
 const chatRoute = require('./routes/chatRoutes');
-
 const connectDB = require('./configs/db');
-
 dotnev.config();
 
 // app initialization
@@ -36,22 +34,25 @@ app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/chats', chatRoute);
 
-// socket transmission
+// ---------- socket -------------- //
 io.on('connection', (socket) => {
-  console.log('User connected ✅');
-
-  socket.on('chat message', async (data) => {
-    console.log('message:', data);
-
-    // Broadcast the message to all connected clients
-    io.emit('chat message', msg);
+  socket.on('setup', (userData) => {
+    console.log('User connected: ', userData._id + ' ✅');
+    socket.join(userData._id);
+    io.emit('connected', userData._id);
   });
 
+  let roomJoined;
+
   // Handle room join
-  socket.on('joinRoom', (room) => {
+  socket.on('joinChat', (room) => {
+    roomJoined = room;
     socket.join(room);
-    console.log(`Socket ${socket.id} joined room: ${room}`);
-    io.to(room).emit('roomJoined', `Joined room: ${room}`);
+    console.log('User Joined Room: ' + room);
+  });
+
+  socket.on('new message', async (newMessageRecieved) => {
+    socket.to(roomJoined).emit('message received', newMessageRecieved);
   });
 
   // Handle user disconnection
@@ -61,5 +62,7 @@ io.on('connection', (socket) => {
 });
 
 server.listen(3000, () => {
-  console.log('Server running at http://localhost:3000');
+  console.log(
+    '----------------------------------------\nServer running at http://localhost:3000'
+  );
 });

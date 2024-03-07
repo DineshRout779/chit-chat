@@ -32,13 +32,20 @@ const SocketProvider = ({ children }) => {
     if (user) socket.connect();
 
     socket.on('connect', () => {
-      console.log(socket);
       dispatch({ type: actionTypes.CONNECT, payload: socket.connected });
+    });
+
+    socket.on('connected', () => {
+      console.log('Connected ✅');
     });
 
     return () => {
       socket.disconnect();
     };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) socket.emit('setup', user);
   }, [user]);
 
   return (

@@ -56,7 +56,7 @@ const ChatList = () => {
           <ul className='pr-2'>
             {chats.map((chat) => {
               const receiver = chat.users.find(
-                (participant) => participant._id !== user._id
+                (participant) => participant._id !== user?._id
               );
 
               return (

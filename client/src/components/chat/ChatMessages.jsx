@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import useChats from '../../hooks/useChats';
 
@@ -8,9 +9,22 @@ const ChatMessages = () => {
   const {
     state: { user },
   } = useAuth();
+  const messagesRef = useRef();
+
+  useLayoutEffect(() => {
+    const scrollToBottom = () => {
+      if (messagesRef.current) {
+        messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+      }
+    };
+    setTimeout(scrollToBottom, 100);
+  }, [messages.length]);
 
   return (
-    <div className='p-4 h-[81vh]'>
+    <div
+      ref={messagesRef}
+      className='p-4 h-[81vh] overflow-y-scroll chat-history'
+    >
       {messages.length ? (
         messages.map((message) => (
           <div

@@ -7,6 +7,7 @@ const actionTypes = {
   SELECT_CHAT: 'SELECT_CHAT',
   SET_CHATS: 'SET_CHATS',
   SET_MESSAGES: ' SET_MESSAGES',
+  NEW_MESSAGE: 'NEW_MESSAGE',
 
   // auth related
   LOGIN: 'LOGIN',

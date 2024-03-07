@@ -192,9 +192,6 @@ async function verifyOTP(req, res) {
   try {
     const { otp, email } = req.body;
 
-    console.log('otps:', storedOTPs);
-    console.log('body:', req.body);
-
     if (storedOTPs[email] && storedOTPs[email] === otp) {
       return res.status(200).json({
         success: true,

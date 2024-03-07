@@ -2,10 +2,12 @@ import { PaperPlaneTilt } from 'phosphor-react';
 import { useState } from 'react';
 import apiClient from '../../services/apiClient';
 import useChats from '../../hooks/useChats';
+import { socket } from '../../socket';
 
 const ChatForm = () => {
   const {
     state: { selectedChat },
+    newMessage,
   } = useChats();
   const [message, setMessage] = useState('');
 
@@ -18,7 +20,13 @@ const ChatForm = () => {
         content: message,
       });
 
-      console.log(res);
+      // console.log(res);
+
+      if (res.status === 201) {
+        setMessage('');
+        newMessage(res.data.message);
+        socket.emit('new message', res.data.message);
+      }
     } catch (error) {
       console.log(error);
     }
