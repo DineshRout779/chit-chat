@@ -64,12 +64,10 @@ export default function AuthProvider({ children }) {
   }, [state.token]);
 
   useEffect(() => {
-    console.log(state.token);
-    if (isTokenExpired(state.token)) {
+    if (state.token && isTokenExpired(state.token)) {
       console.log('Token expired! Please login');
       logout();
       if (window.location.pathname !== '/') {
-        // Redirect to the login page
         window.location.href = '/';
       }
     }
