@@ -13,9 +13,9 @@ const SidebarFooter = () => {
     <div className='mt-auto p-4'>
       <button
         onClick={handleLogout}
-        className='hover:bg-red-400 flex items-center gap-2 font-medium text-gray-200 hover:text-white w-full p-3 px-4 rounded-md'
+        className='hover:bg-red-400 flex justify-center items-center gap-2 font-medium text-gray-200 hover:text-white w-fit p-3 md:px-4 rounded-md'
       >
-        <SignOut size={24} /> Logout
+        <SignOut size={24} /> <span className='hidden md:block'>Logout</span>
       </button>
     </div>
   );

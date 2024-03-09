@@ -88,7 +88,7 @@ const ChatProvider = ({ children }) => {
         stopLoading();
       }
     })();
-  }, []);
+  }, [state.messages.length]);
 
   // fetch messages if any chatId is selected
   useEffect(() => {

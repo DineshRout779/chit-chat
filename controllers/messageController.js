@@ -38,7 +38,7 @@ async function getAllMessagesByChatId(req, res) {
   try {
     const messages = await Message.find({ chatId: req.params.chatId }).populate(
       'sender',
-      '_id profilePic'
+      '-password'
     );
 
     if (!messages) {

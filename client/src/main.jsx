@@ -10,6 +10,8 @@ import SocketProvider from './context/SocketContext.jsx';
 import AuthProvider from './context/AuthContext.jsx';
 import ChatProvider from './context/ChatContext.jsx';
 import ForgetPassword from './pages/ForgetPassword.jsx';
+import ChatNotSelected from './pages/ChatNotSelected.jsx';
+import ChatDetailed from './pages/ChatDetailed.jsx';
 
 const router = createBrowserRouter([
   {
@@ -31,6 +33,16 @@ const router = createBrowserRouter([
       {
         path: '/chat',
         element: <Chat />,
+        children: [
+          {
+            index: true,
+            element: <ChatNotSelected />,
+          },
+          {
+            path: ':id',
+            element: <ChatDetailed />,
+          },
+        ],
       },
     ],
   },

@@ -9,6 +9,8 @@ const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messageRoute');
 const chatRoute = require('./routes/chatRoutes');
 const connectDB = require('./configs/db');
+const User = require('./models/User');
+const Chat = require('./models/Chat');
 dotnev.config();
 
 // app initialization
@@ -36,10 +38,15 @@ app.use('/api/chats', chatRoute);
 
 // ---------- socket -------------- //
 io.on('connection', (socket) => {
-  socket.on('setup', (userData) => {
-    console.log('User connected: ', userData._id + ' ✅');
-    socket.join(userData._id);
-    io.emit('connected', userData._id);
+  let connectedUserId;
+  socket.on('setup', async (userData) => {
+    connectedUserId = userData._id;
+    console.log('User connected: ', connectedUserId + ' ✅');
+    socket.join(connectedUserId);
+
+    await User.findByIdAndUpdate(connectedUserId, { status: 'Online' });
+
+    io.to(connectedUserId).emit('conn', connectedUserId);
   });
 
   let roomJoined;
@@ -52,12 +59,37 @@ io.on('connection', (socket) => {
   });
 
   socket.on('new message', async (newMessageRecieved) => {
-    socket.to(roomJoined).emit('message received', newMessageRecieved);
+    // console.log('message received 📄', newMessageRecieved);
+
+    const { chatId } = newMessageRecieved;
+
+    const chat = await Chat.findById(chatId).populate('users', '-password');
+
+    // console.log('chat users: ', chat.users);
+
+    chat.users.forEach((u) => {
+      console.log(u._id, connectedUserId);
+      if (u._id.toString() === connectedUserId) return;
+
+      io.to(u._id.toString()).emit('message received', newMessageRecieved);
+    });
+    // socket.to(roomJoined).emit('message received', newMessageRecieved);
+  });
+
+  // typing
+  socket.on('typing', (room) => {
+    socket.to(roomJoined).emit('typing');
+  });
+
+  // stop typing
+  socket.on('stop typing', (room) => {
+    socket.in(room).emit('stop typing');
   });
 
   // Handle user disconnection
   socket.on('disconnect', () => {
-    console.log('User disconnected ❌');
+    console.log('======disconnected=======', connectedUserId, '❌');
+    socket.to(connectedUserId).emit('disconnected');
   });
 });
 

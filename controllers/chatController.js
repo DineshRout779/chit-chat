@@ -45,10 +45,14 @@ async function createChat(req, res) {
 // get all chats where the loggedin user is a participant
 async function getAllChats(req, res) {
   try {
-    const chats = await Chat.find({ users: req.user._id }).populate(
-      'users',
-      '_id profilePic username'
-    );
+    const chats = await Chat.find({ users: req.user._id })
+      .populate({
+        path: 'users',
+        select: '-password',
+      })
+      .populate({
+        path: 'latestMessage',
+      });
 
     return res.status(200).json({
       success: true,

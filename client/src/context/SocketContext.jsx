@@ -31,18 +31,17 @@ const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (user) socket.connect();
 
-    socket.on('connect', () => {
-      dispatch({ type: actionTypes.CONNECT, payload: socket.connected });
-    });
-
-    socket.on('connected', () => {
-      console.log('Connected ✅');
-    });
-
     return () => {
       socket.disconnect();
     };
   }, [user]);
+
+  useEffect(() => {
+    socket.on('conn', (data) => {
+      console.log('Connected ✅', data);
+      dispatch({ type: actionTypes.CONNECT, payload: socket.connected });
+    });
+  }, []);
 
   useEffect(() => {
     if (user) socket.emit('setup', user);

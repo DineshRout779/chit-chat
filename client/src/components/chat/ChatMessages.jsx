@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import useChats from '../../hooks/useChats';
+import { motion } from 'framer-motion';
 
 const ChatMessages = () => {
   const {
@@ -23,7 +24,7 @@ const ChatMessages = () => {
   return (
     <div
       ref={messagesRef}
-      className='p-4 h-[81vh] overflow-y-scroll chat-history'
+      className='p-4 h-[81vh] overflow-y-auto chat-history'
     >
       {messages.length ? (
         messages.map((message) => (
@@ -31,7 +32,9 @@ const ChatMessages = () => {
             key={message._id}
             className={`flex my-2 ${message.sender._id === user._id ? '' : ''}`}
           >
-            <p
+            <motion.p
+              initial={{ y: 50 }}
+              animate={{ y: 0 }}
               className={`p-2 px-4 rounded-full w-fit ${
                 message.sender._id === user._id
                   ? 'bg-blue-600 text-white ml-auto'
@@ -39,7 +42,7 @@ const ChatMessages = () => {
               }`}
             >
               {message.content}
-            </p>
+            </motion.p>
           </div>
         ))
       ) : (

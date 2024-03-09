@@ -1,16 +1,18 @@
-import useSocket from '../hooks/useSocket';
+// import useSocket from '../hooks/useSocket';
 
 const SidebarHeader = () => {
-  const {
-    state: { isConnected },
-  } = useSocket();
+  // const {
+  //   state: { isConnected },
+  // } = useSocket();
 
   return (
     <div className='p-4'>
-      <div className='flex gap-2 items-center mb-4'>
-        <p className='font-medium text-xl dark:text-white'>Chatty</p>
-        <small>{isConnected ? '🟢' : '🔴'}</small>
-      </div>
+      <img
+        src='https://cryptologos.cc/logos/chatcoin-chat-logo.png'
+        className='block aspect-square w-12 h-12'
+        alt='logo'
+      />
+      {/* <small>{isConnected ? '🟢' : '🔴'}</small> */}
     </div>
   );
 };
