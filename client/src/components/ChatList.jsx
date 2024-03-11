@@ -1,4 +1,9 @@
-import { FunnelSimple, Plus } from 'phosphor-react';
+import {
+  CircleDashed,
+  DotsThreeCircleVertical,
+  FunnelSimple,
+  Plus,
+} from 'phosphor-react';
 import useChats from '../hooks/useChats';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
@@ -36,9 +41,17 @@ const ChatList = () => {
       {/* header */}
       <div className='flex justify-between items-center my-4 '>
         <h2 className='text-zinc-900 dark:text-white'>Chats</h2>
-        <button className='hover:bg-gray-200 dark:hover:bg-zinc-800 p-2 rounded-md'>
-          <Plus className='text-blue-400' size={24} />
-        </button>
+        <div className='flex gap-2'>
+          <button className='hover:bg-gray-200 dark:hover:bg-zinc-800 p-2 rounded-md'>
+            <CircleDashed className='text-blue-400' size={24} />
+          </button>
+          <button className='hover:bg-gray-200 dark:hover:bg-zinc-800 p-2 rounded-md'>
+            <Plus className='text-blue-400' size={24} />
+          </button>
+          <button className='hover:bg-gray-200 dark:hover:bg-zinc-800 p-2 rounded-md'>
+            <DotsThreeCircleVertical className='text-blue-400' size={24} />
+          </button>
+        </div>
       </div>
 
       {/* search & filter */}

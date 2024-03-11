@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router-dom';
 const ChatDetailedHeader = () => {
   const {
     state: { chats, selectedChat },
+    selectChat,
+    viewProfile,
   } = useChats();
   const {
     state: { user },
@@ -15,6 +17,15 @@ const ChatDetailedHeader = () => {
   const navigate = useNavigate();
 
   const [isTyping, setIsTyping] = useState(false);
+
+  const handleBack = () => {
+    navigate('/chat');
+    selectChat(null);
+  };
+
+  const handleProfileToggle = (id) => {
+    viewProfile(id);
+  };
 
   const getUserChattingWith = () => {
     const id = selectedChat._id;
@@ -32,13 +43,16 @@ const ChatDetailedHeader = () => {
     <div className='p-4 border-b border-b-zinc-500/25 flex justify-between items-center'>
       <h3 className='font-medium text-gray-700 dark:text-gray-200 flex items-center gap-2'>
         <button
-          onClick={() => navigate('/chat')}
+          onClick={handleBack}
           className='hover:bg-gray-200 dark:hover:bg-zinc-800 p-2 rounded-md'
         >
           <CaretLeft size={24} />
         </button>
         <div className='flex-col'>
-          <div>
+          <div
+            className='cursor-pointer'
+            onClick={() => handleProfileToggle(getUserChattingWith()._id)}
+          >
             <p> {getUserChattingWith().username} </p>{' '}
           </div>
 

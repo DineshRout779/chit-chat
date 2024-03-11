@@ -11,6 +11,7 @@ const initialState = {
   loading: false,
   messages: [],
   refetch: false,
+  selectedProfile: null,
 };
 
 export const ChatContext = createContext();
@@ -56,6 +57,16 @@ const chatReducers = (state, action) => {
           (chat) => chat._id === state.selectedChat._id
         ),
       };
+    case actionTypes.PROFILE_SELECTED:
+      return {
+        ...state,
+        selectedProfile: action.payload,
+      };
+    case actionTypes.PROFILE_DESELECTED:
+      return {
+        ...state,
+        selectedProfile: null,
+      };
     default:
       return state;
   }
@@ -93,6 +104,22 @@ const ChatProvider = ({ children }) => {
 
   const refresh = () => {
     dispatch({ type: actionTypes.REFETCH });
+  };
+
+  const viewProfile = (id) => {
+    dispatch({ type: actionTypes.PROFILE_SELECTED, payload: id });
+  };
+
+  const closeProfile = () => {
+    dispatch({ type: actionTypes.PROFILE_DESELECTED });
+  };
+
+  const toggleProfile = (id) => {
+    if (!state.selectedProfile) {
+      viewProfile(id);
+    } else {
+      closeProfile();
+    }
   };
 
   // fetch chats
@@ -158,6 +185,9 @@ const ChatProvider = ({ children }) => {
         stopLoading,
         selectChat,
         newMessage,
+        viewProfile,
+        closeProfile,
+        toggleProfile,
       }}
     >
       {children}

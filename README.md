@@ -11,13 +11,13 @@ A chat application built using React, nodejs and socket.io.
   - [x] Logout when token expires
   - [x] Reset password through email
 - [x] Single Chat
-  - [ ] Send and Receive Chat
-  - [ ] Typing Indicator
+  - [x] Send and Receive Chat
+  - [x] Typing Indicator
   - [ ] Read Receipts
   - [ ] Search messages
   - [ ] Send emojis
   - [ ] Edit and Delete messages
-  - [ ] Online active Status
+  - [x] Online active Status
 - [ ] Group Chat
   - [ ] Add people
   - [ ] Remove people
@@ -25,7 +25,6 @@ A chat application built using React, nodejs and socket.io.
 - [ ] Notification
 - [x] Dark Mode
 - [ ] Search users and initiate chat
-- [ ] Presence Status
 - [ ] Block and Report
 - [ ] User profile
 - [ ] Change chat theme
