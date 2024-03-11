@@ -39,62 +39,70 @@ app.use('/api/chats', chatRoute);
 // ---------- socket -------------- //
 io.on('connection', (socket) => {
   let connectedUserId;
+  let roomJoined;
+
+  // setup: When a user logs in make a room,
   socket.on('setup', async (userData) => {
     connectedUserId = userData._id;
-    console.log('User connected: ', connectedUserId + ' ✅');
+    console.log('======connected=======', connectedUserId, '✅');
     socket.join(connectedUserId);
 
+    // update active status in DB
     await User.findByIdAndUpdate(connectedUserId, { status: 'Online' });
 
+    //
+    io.except(connectedUserId).emit('userOnline', connectedUserId);
     io.to(connectedUserId).emit('conn', connectedUserId);
   });
 
-  let roomJoined;
-
-  // Handle room join
+  // When a user joins a room (selects an user for chat) ==> Join them in a common room
   socket.on('joinChat', (room) => {
     roomJoined = room;
     socket.join(room);
     console.log('User Joined Room: ' + room);
   });
 
+  // handle incoming messages
   socket.on('new message', async (newMessageRecieved) => {
     // console.log('message received 📄', newMessageRecieved);
 
+    // send the incoming message to users in the room except the one who sent
     const { chatId } = newMessageRecieved;
-
     const chat = await Chat.findById(chatId).populate('users', '-password');
-
-    // console.log('chat users: ', chat.users);
-
     chat.users.forEach((u) => {
-      console.log(u._id, connectedUserId);
       if (u._id.toString() === connectedUserId) return;
 
       io.to(u._id.toString()).emit('message received', newMessageRecieved);
     });
-    // socket.to(roomJoined).emit('message received', newMessageRecieved);
   });
 
-  // typing
+  // typing indicator
   socket.on('typing', (room) => {
     socket.to(roomJoined).emit('typing');
   });
 
-  // stop typing
+  // stop typing indicator
   socket.on('stop typing', (room) => {
     socket.in(room).emit('stop typing');
   });
 
   // Handle user disconnection
-  socket.on('disconnect', () => {
+  socket.on('disconnect', async () => {
     console.log('======disconnected=======', connectedUserId, '❌');
+
+    // update active status in DB
+    await User.findByIdAndUpdate(connectedUserId, { status: 'Offline' });
+
+    // emit offline status to all users except the one who left
+    io.except(connectedUserId).emit('userOffline', connectedUserId);
+
+    // disconnect from own room
     socket.to(connectedUserId).emit('disconnected');
   });
 });
 
 server.listen(3000, () => {
   console.log(
-    '----------------------------------------\nServer running at http://localhost:3000'
+    '------------------------------------------------------\nServer running at http://localhost:3000'
   );
 });

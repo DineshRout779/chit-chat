@@ -38,7 +38,7 @@ const ChatMessages = () => {
               className={`p-2 px-4 rounded-full w-fit ${
                 message.sender._id === user._id
                   ? 'bg-blue-600 text-white ml-auto'
-                  : 'bg-gray-200 dark:bg-zinc-800 text-gray-300'
+                  : 'bg-gray-200 dark:bg-zinc-800 text-zinc-800 dark:text-gray-300'
               }`}
             >
               {message.content}

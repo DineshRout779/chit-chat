@@ -16,6 +16,8 @@ const actionTypes = {
 
   // loading related
   LOADING: 'LOADING',
+  REFETCH: 'REFETCH',
+  RELOAD_SELECTEDCHAT: 'RELOAD_SELECTEDCHAT',
 };
 
 export default actionTypes;

@@ -46,6 +46,9 @@ async function createChat(req, res) {
 async function getAllChats(req, res) {
   try {
     const chats = await Chat.find({ users: req.user._id })
+      .sort({
+        updatedAt: -1,
+      })
       .populate({
         path: 'users',
         select: '-password',

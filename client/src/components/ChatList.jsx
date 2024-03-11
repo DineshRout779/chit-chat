@@ -36,7 +36,7 @@ const ChatList = () => {
       {/* header */}
       <div className='flex justify-between items-center my-4 '>
         <h2 className='text-zinc-900 dark:text-white'>Chats</h2>
-        <button className='hover:bg-zinc-800 p-2 rounded-md'>
+        <button className='hover:bg-gray-200 dark:hover:bg-zinc-800 p-2 rounded-md'>
           <Plus className='text-blue-400' size={24} />
         </button>
       </div>
@@ -69,7 +69,7 @@ const ChatList = () => {
                 <li
                   key={chat._id}
                   onClick={() => handleChatSelect(chat._id)}
-                  className='cursor-pointer rounded-md my-2 hover:bg-gray-200 dark:hover:bg-zinc-800 flex w-full gap-4 bg-white dark:bg-zinc-900 p-4'
+                  className='cursor-pointer rounded-md my-2 hover:bg-blue-500 dark:hover:bg-zinc-800 flex w-full gap-4 bg-white dark:bg-zinc-900 p-4'
                 >
                   <div className='relative inline-block'>
                     <img
@@ -81,7 +81,7 @@ const ChatList = () => {
                     <span
                       className={
                         receiver.status === 'Online'
-                          ? 'absolute top-0 end-0 block size-2 rounded-full ring-1 ring-black  bg-lime-400'
+                          ? 'absolute top-0 end-0 block size-2 rounded-full ring-1 ring-white dark:ring-black  bg-lime-400'
                           : ''
                       }
                     ></span>

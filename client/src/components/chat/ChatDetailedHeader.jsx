@@ -3,19 +3,24 @@ import useChats from '../../hooks/useChats';
 import { useEffect, useState } from 'react';
 import { socket } from '../../socket';
 import { useAuth } from '../../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 const ChatDetailedHeader = () => {
   const {
-    state: { selectedChat },
+    state: { chats, selectedChat },
   } = useChats();
   const {
     state: { user },
   } = useAuth();
+  const navigate = useNavigate();
 
   const [isTyping, setIsTyping] = useState(false);
 
-  const getUserChattingWith = (users) => {
-    return users.find((u) => u._id !== user._id);
+  const getUserChattingWith = () => {
+    const id = selectedChat._id;
+    const chat = chats.find((chat) => chat?._id === id);
+
+    return chat?.users?.find((c) => c?._id !== user?._id);
   };
 
   useEffect(() => {
@@ -26,20 +31,18 @@ const ChatDetailedHeader = () => {
   return (
     <div className='p-4 border-b border-b-zinc-500/25 flex justify-between items-center'>
       <h3 className='font-medium text-gray-700 dark:text-gray-200 flex items-center gap-2'>
-        <button className='hover:bg-gray-200 dark:hover:bg-zinc-800 p-2 rounded-md'>
+        <button
+          onClick={() => navigate('/chat')}
+          className='hover:bg-gray-200 dark:hover:bg-zinc-800 p-2 rounded-md'
+        >
           <CaretLeft size={24} />
         </button>
         <div className='flex-col'>
           <div>
-            <p> {getUserChattingWith(selectedChat.users).username} </p>{' '}
+            <p> {getUserChattingWith().username} </p>{' '}
           </div>
-          {/* {isTyping &&  ? (
-            <p className='dark:text-zinc-600 text-xs'>Typing</p>
-          ) : (
-            
-          )} */}
 
-          {getUserChattingWith(selectedChat.users).status === 'Online' ? (
+          {getUserChattingWith().status === 'Online' ? (
             isTyping ? (
               <p className='text-xs dark:text-zinc-400'>Typing</p>
             ) : (

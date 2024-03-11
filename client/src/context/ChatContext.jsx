@@ -3,12 +3,14 @@ import { createContext, useEffect, useReducer } from 'react';
 import actionTypes from '../constants/actionTypes';
 import apiClient from '../services/apiClient';
 import { socket } from '../socket';
+import { useAuth } from '../hooks/useAuth';
 
 const initialState = {
   selectedChat: null,
   chats: [],
   loading: false,
   messages: [],
+  refetch: false,
 };
 
 export const ChatContext = createContext();
@@ -42,6 +44,18 @@ const chatReducers = (state, action) => {
         ...state,
         loading: action.payload,
       };
+    case actionTypes.REFETCH:
+      return {
+        ...state,
+        refetch: !state.refetch,
+      };
+    case actionTypes.RELOAD_SELECTEDCHAT:
+      return {
+        ...state,
+        selectedChat: state.chats.find(
+          (chat) => chat._id === state.selectedChat._id
+        ),
+      };
     default:
       return state;
   }
@@ -49,6 +63,9 @@ const chatReducers = (state, action) => {
 
 const ChatProvider = ({ children }) => {
   const [state, dispatch] = useReducer(chatReducers, initialState);
+  const {
+    state: { token },
+  } = useAuth();
 
   const setChats = (chats) => {
     dispatch({ type: actionTypes.SET_CHATS, payload: chats });
@@ -74,6 +91,10 @@ const ChatProvider = ({ children }) => {
     dispatch({ type: actionTypes.LOADING, payload: false });
   };
 
+  const refresh = () => {
+    dispatch({ type: actionTypes.REFETCH });
+  };
+
   // fetch chats
   useEffect(() => {
     (async () => {
@@ -88,7 +109,7 @@ const ChatProvider = ({ children }) => {
         stopLoading();
       }
     })();
-  }, [state.messages.length]);
+  }, [state.messages.length, token, state.refetch]);
 
   // fetch messages if any chatId is selected
   useEffect(() => {
@@ -106,12 +127,25 @@ const ChatProvider = ({ children }) => {
           console.log(error);
         }
       })();
-  }, [state.selectedChat]);
+  }, [state.selectedChat, state.refetch]);
 
   useEffect(() => {
     socket.on('message received', (newMsg) => {
-      console.log('message received', newMsg);
       newMessage(newMsg);
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.on('userOnline', () => {
+      refresh();
+      dispatch({ type: actionTypes.RELOAD_SELECTEDCHAT });
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.on('userOffline', () => {
+      refresh();
+      dispatch({ type: actionTypes.RELOAD_SELECTEDCHAT });
     });
   }, []);
 
