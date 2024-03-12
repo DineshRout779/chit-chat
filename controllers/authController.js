@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
-const generateOTP = require('../utils/generateOtp');
+const generateOTP = require('../utils/generateOTP');
 
 // store OTPs here
 const storedOTPs = {};
