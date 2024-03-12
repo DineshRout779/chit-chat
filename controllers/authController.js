@@ -17,6 +17,10 @@ async function signup(req, res) {
   try {
     const { username, email, password } = req.body;
 
+    if (!email || !username || !password) {
+      throw new Error('All fields are required');
+    }
+
     // find user with the given username, if user exists ==> send error
     const user = await User.findOne({ username });
     if (user) {
@@ -63,6 +67,10 @@ async function signup(req, res) {
 async function login(req, res) {
   try {
     const { username, password } = req.body;
+
+    if (!username || !password) {
+      throw new Error('All fields are required');
+    }
 
     // check if user exists, if not ==> send error
     const user = await User.findOne({ username });

@@ -18,7 +18,8 @@ const verifyLogin = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({
-      error,
+      success: false,
+      error: error.message,
     });
   }
 };
