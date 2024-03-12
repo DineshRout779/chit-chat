@@ -16,7 +16,7 @@ A chat application built using React, nodejs and socket.io.
   - [ ] Read Receipts
   - [ ] Search messages
   - [ ] Send emojis
-  - [ ] Edit and Delete messages
+  - [ ] Edit and Delete messages/Unsend
   - [x] Online active Status
 - [ ] Group Chat
   - [ ] Add people
@@ -30,3 +30,4 @@ A chat application built using React, nodejs and socket.io.
 - [ ] Change chat theme
 - [ ] Accessibilty
 - [ ] Feedback
+- [ ] Pin users

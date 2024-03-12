@@ -7,11 +7,12 @@ import Login from './pages/Login.jsx';
 import Chat from './pages/Chat.jsx';
 import Signup from './pages/Signup.jsx';
 import SocketProvider from './context/SocketContext.jsx';
-import AuthProvider from './context/AuthContext.jsx';
 import ChatProvider from './context/ChatContext.jsx';
 import ForgetPassword from './pages/ForgetPassword.jsx';
 import ChatNotSelected from './pages/ChatNotSelected.jsx';
 import ChatDetailed from './pages/ChatDetailed.jsx';
+import React from 'react';
+import AuthProvider from './context/AuthContext.jsx';
 
 const router = createBrowserRouter([
   {
@@ -49,12 +50,13 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  // <React.StrictMode>
-  <AuthProvider>
-    <ChatProvider>
-      <SocketProvider>
-        <RouterProvider router={router} />
-      </SocketProvider>
-    </ChatProvider>
-  </AuthProvider> // </React.StrictMode>
+  <React.StrictMode>
+    <AuthProvider>
+      <ChatProvider>
+        <SocketProvider>
+          <RouterProvider router={router} />
+        </SocketProvider>
+      </ChatProvider>
+    </AuthProvider>
+  </React.StrictMode>
 );
