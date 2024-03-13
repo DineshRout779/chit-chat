@@ -54,7 +54,7 @@ const chatReducers = (state, action) => {
       return {
         ...state,
         selectedChat: state.chats.find(
-          (chat) => chat._id === state.selectedChat._id
+          (chat) => chat._id === state.selectedChat?._id
         ),
       };
     case actionTypes.PROFILE_SELECTED:

@@ -50,13 +50,13 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <AuthProvider>
-      <ChatProvider>
-        <SocketProvider>
-          <RouterProvider router={router} />
-        </SocketProvider>
-      </ChatProvider>
-    </AuthProvider>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <AuthProvider>
+    <ChatProvider>
+      <SocketProvider>
+        <RouterProvider router={router} />
+      </SocketProvider>
+    </ChatProvider>
+  </AuthProvider>
+  // </React.StrictMode>
 );
