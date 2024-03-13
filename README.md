@@ -1,4 +1,4 @@
-# Mern-chat-app
+# CHit-chat
 
 A chat application built using React, nodejs and socket.io.
 
@@ -31,3 +31,4 @@ A chat application built using React, nodejs and socket.io.
 - [ ] Accessibilty
 - [ ] Feedback
 - [ ] Pin users
+- [x] Fully responsive on Laptop and Mobiles

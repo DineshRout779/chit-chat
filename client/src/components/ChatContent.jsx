@@ -1,15 +1,14 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router-dom';
 import ChatList from './ChatList';
-import useChats from '../hooks/useChats';
+import useScreenWidth from '../hooks/useScreenWidth';
 
 const ChatContent = () => {
-  const {
-    state: { selectedProfile },
-  } = useChats();
+  const { id } = useParams();
+  const screenWidth = useScreenWidth();
 
   return (
     <div className='relative flex w-full'>
-      <ChatList />
+      {id && screenWidth <= 768 ? null : <ChatList />}
       <Outlet />
     </div>
   );

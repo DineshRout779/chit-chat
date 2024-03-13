@@ -1,12 +1,12 @@
 import {
   CircleDashed,
-  DotsThreeCircleVertical,
+  DotsThreeVertical,
   FunnelSimple,
   Plus,
 } from 'phosphor-react';
 import useChats from '../hooks/useChats';
 import { useAuth } from '../hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import apiClient from '../services/apiClient';
 import SearchUserItem from './SearchUserItem';
@@ -24,6 +24,7 @@ const ChatList = () => {
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
+  const { id } = useParams();
 
   const handleChatSelect = (chatId) => {
     selectChat(chatId);
@@ -50,19 +51,20 @@ const ChatList = () => {
     setIsSearching(newQuery.length > 0);
   };
 
-  // debounce function to minimize frequent function calls
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSearch = useCallback(debounce(searchUsers, 500), [query]);
-
   useEffect(() => {
-    if (query.length > 0) debouncedSearch();
+    if (query.length > 0) searchUsers();
+
     return () => {
-      debouncedSearch.cancel();
+      searchUsers.cancel();
     };
-  }, [query, debouncedSearch]);
+  }, [query, searchUsers]);
 
   return (
-    <div className='w-full basis-full md:basis-5/12 border-r border-gray-200 dark:border-r-zinc-800 px-4 bg-white/90 dark:bg-black/75 backdrop-blur-3xl'>
+    <div
+      className={`transition-all md:basis-5/12 border-r border-gray-200 dark:border-r-zinc-800 px-4 bg-white/90 dark:bg-black/75 backdrop-blur-3xl ${
+        id ? 'w-0 basis-0' : 'w-full basis-full'
+      }`}
+    >
       {/* header */}
       <div className='flex justify-between items-center my-4 '>
         <h2 className='text-zinc-900 dark:text-white'>Chats</h2>
@@ -74,7 +76,7 @@ const ChatList = () => {
             <Plus className='text-blue-400' size={24} />
           </button>
           <button className='hover:bg-gray-200 dark:hover:bg-zinc-800 p-2 rounded-md'>
-            <DotsThreeCircleVertical className='text-blue-400' size={24} />
+            <DotsThreeVertical className='text-blue-400' size={24} />
           </button>
         </div>
       </div>
