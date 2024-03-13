@@ -127,14 +127,11 @@ const ChatProvider = ({ children }) => {
     token &&
       (async () => {
         try {
-          startLoading();
           const res = await apiClient.get('/api/chats');
 
           setChats(res.data.chats);
         } catch (error) {
           console.log(error);
-        } finally {
-          stopLoading();
         }
       })();
   }, [state.messages.length, token, state.refetch]);

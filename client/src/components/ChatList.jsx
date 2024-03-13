@@ -158,26 +158,26 @@ const ChatList = () => {
           ) : (
             <ul className='pr-2'>
               {chats.map((chat) => {
-                const receiver = chat.users.find(
-                  (participant) => participant._id !== user?._id
+                const receiver = chat?.users?.find(
+                  (participant) => participant?._id !== user?._id
                 );
 
                 return (
                   <li
-                    key={chat._id}
-                    onClick={() => handleChatSelect(chat._id)}
+                    key={chat?._id}
+                    onClick={() => handleChatSelect(chat?._id)}
                     className='cursor-pointer rounded-md my-2 hover:bg-blue-500 dark:hover:bg-zinc-800 flex w-full gap-4 bg-white dark:bg-zinc-900 p-4'
                   >
                     <div className='relative inline-block'>
                       <img
                         className='inline-block size-8 rounded-full'
-                        src={receiver.profilePic}
-                        alt={receiver.username}
+                        src={receiver?.profilePic}
+                        alt={receiver?.username}
                         loading='lazy'
                       />
                       <span
                         className={
-                          receiver.status === 'Online'
+                          receiver?.status === 'Online'
                             ? 'absolute top-0 end-0 block size-2 rounded-full ring-1 ring-white dark:ring-black  bg-lime-400'
                             : ''
                         }
@@ -185,7 +185,7 @@ const ChatList = () => {
                     </div>
                     <div className=''>
                       <h2 className='text-md dark:text-slate-300'>
-                        {receiver.username}
+                        {receiver?.username}
                       </h2>
                       <p className='text-gray-500 text-sm'>
                         {chat?.latestMessage?.content ||
@@ -205,7 +205,7 @@ const ChatList = () => {
             {searchResults.map((user) => {
               return (
                 <SearchUserItem
-                  key={user._id}
+                  key={user?._id}
                   user={user}
                   handleUserSelect={handleChatCreateOrGet}
                 />
