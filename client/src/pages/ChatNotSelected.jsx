@@ -3,7 +3,7 @@ import useScreenWidth from '../hooks/useScreenWidth';
 const ChatNotSelected = () => {
   const screenWidth = useScreenWidth();
 
-  if (screenWidth <= 768) {
+  if (screenWidth <= 640) {
     return null;
   }
 
