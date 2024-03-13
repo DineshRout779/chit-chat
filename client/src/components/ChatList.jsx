@@ -43,7 +43,7 @@ const ChatList = () => {
 
   const handleChatCreateOrGet = async (userId) => {
     try {
-      const res = await apiClient.post('/chats', {
+      const res = await apiClient.post('/api/chats', {
         selectedUserId: userId,
       });
 
@@ -56,7 +56,7 @@ const ChatList = () => {
 
   const handleSearch = async () => {
     try {
-      const res = await apiClient.get(`/users?username=${query}`);
+      const res = await apiClient.get(`/api/users?username=${query}`);
       if (res.status === 200) {
         setSearchResults(res.data.users);
       }

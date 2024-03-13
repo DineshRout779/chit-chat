@@ -25,7 +25,7 @@ const Signup = () => {
     e.preventDefault();
 
     try {
-      const res = await apiClient.post('/auth/signup', values);
+      const res = await apiClient.post('/api/auth/signup', values);
       if (res.status === 201) {
         navigate('/');
       }

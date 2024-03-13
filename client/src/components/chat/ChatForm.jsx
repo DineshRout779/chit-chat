@@ -40,7 +40,7 @@ const ChatForm = () => {
     e.preventDefault();
 
     try {
-      const res = await apiClient.post('/messages', {
+      const res = await apiClient.post('/api/messages', {
         chatId: selectedChat,
         content: message,
       });

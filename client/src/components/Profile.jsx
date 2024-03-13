@@ -13,7 +13,7 @@ const Profile = () => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await apiClient.get(`/users/${selectedProfile}`);
+        const res = await apiClient.get(`/api/users/${selectedProfile}`);
 
         if (res.status === 200) {
           setUserData(res.data.user);

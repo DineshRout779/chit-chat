@@ -128,7 +128,7 @@ const ChatProvider = ({ children }) => {
       (async () => {
         try {
           startLoading();
-          const res = await apiClient.get('/chats');
+          const res = await apiClient.get('/api/chats');
 
           setChats(res.data.chats);
         } catch (error) {
@@ -145,7 +145,7 @@ const ChatProvider = ({ children }) => {
       (async () => {
         try {
           const res = await apiClient.get(
-            `/messages/${state.selectedChat._id}`
+            `/api/messages/${state.selectedChat._id}`
           );
 
           setMessages(res.data.messages);

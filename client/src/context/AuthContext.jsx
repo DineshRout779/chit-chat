@@ -53,7 +53,7 @@ export default function AuthProvider({ children }) {
       // if token exists ==> fetch user
       (async () => {
         try {
-          const res = await apiClient.get('/auth/loggedInUser');
+          const res = await apiClient.get('/api/auth/loggedInUser');
 
           dispatch({ type: actionTypes.STORE_USER, payload: res.data.user });
         } catch (error) {

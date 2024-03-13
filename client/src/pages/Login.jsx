@@ -32,7 +32,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const res = await apiClient.post('/auth/login', values);
+      const res = await apiClient.post('/api/auth/login', values);
       if (res.status === 200) {
         loginUser(res.data.token);
       }

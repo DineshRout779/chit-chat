@@ -20,7 +20,7 @@ const ForgetPassword = () => {
     e.preventDefault();
 
     try {
-      const res = await apiClient.post('/auth/forget-password', { email });
+      const res = await apiClient.post('/api/auth/forget-password', { email });
 
       if (res.data.success) {
         setOtpGenerated(true);
@@ -35,7 +35,7 @@ const ForgetPassword = () => {
     e.preventDefault();
 
     try {
-      const res = await apiClient.post('/auth/verify-otp', { email, otp });
+      const res = await apiClient.post('/api/auth/verify-otp', { email, otp });
 
       if (res.data.success) {
         setOtpVerified(true);
@@ -50,7 +50,7 @@ const ForgetPassword = () => {
     e.preventDefault();
 
     try {
-      const res = await apiClient.post('/auth/reset-password', {
+      const res = await apiClient.post('/api/auth/reset-password', {
         email,
         password,
       });
