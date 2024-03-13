@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
-const SearchUserItem = ({ user }) => {
+const SearchUserItem = ({ user, handleUserSelect }) => {
   return (
     <li
       key={user._id}
-      //   onClick={() => handleChatSelect(chat._id)}
+      onClick={() => handleUserSelect(user._id)}
       className='cursor-pointer rounded-md my-2 hover:bg-blue-500 dark:hover:bg-zinc-800 flex w-full gap-4 bg-white dark:bg-zinc-900 p-4'
     >
       <div className='relative inline-block'>

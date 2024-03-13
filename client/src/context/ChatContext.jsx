@@ -124,18 +124,19 @@ const ChatProvider = ({ children }) => {
 
   // fetch chats
   useEffect(() => {
-    (async () => {
-      try {
-        startLoading();
-        const res = await apiClient.get('/chats');
+    token &&
+      (async () => {
+        try {
+          startLoading();
+          const res = await apiClient.get('/chats');
 
-        setChats(res.data.chats);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        stopLoading();
-      }
-    })();
+          setChats(res.data.chats);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          stopLoading();
+        }
+      })();
   }, [state.messages.length, token, state.refetch]);
 
   // fetch messages if any chatId is selected

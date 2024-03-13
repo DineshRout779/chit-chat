@@ -2,11 +2,14 @@ import {
   CircleDashed,
   DotsThreeVertical,
   FunnelSimple,
+  GearSix,
   Plus,
+  SignOut,
+  UserCircle,
 } from 'phosphor-react';
 import useChats from '../hooks/useChats';
 import { useAuth } from '../hooks/useAuth';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import apiClient from '../services/apiClient';
 import SearchUserItem from './SearchUserItem';
@@ -25,10 +28,30 @@ const ChatList = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const { id } = useParams();
+  const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   const handleChatSelect = (chatId) => {
     selectChat(chatId);
     navigate(`/chat/${chatId}`);
+  };
+
+  const handleChatCreateOrGet = async (userId) => {
+    try {
+      const res = await apiClient.post('/chats', {
+        selectedUserId: userId,
+      });
+
+      if (res.status === 200) selectChat(res.data.chat._id);
+      navigate(`/chat/${res.data.chat._id}`);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleSearch = async () => {
@@ -66,17 +89,48 @@ const ChatList = () => {
       }`}
     >
       {/* header */}
-      <div className='flex justify-between items-center my-4 '>
+      <div className='flex justify-between items-center my-4 relative'>
         <h2 className='text-zinc-900 dark:text-white'>Chats</h2>
+
+        {/* actions */}
         <div className='flex gap-2'>
           <button className='hover:bg-gray-200 dark:hover:bg-zinc-800 p-2 rounded-md'>
-            <CircleDashed className='text-blue-400' size={24} />
+            <CircleDashed className='text-sky-400' size={24} />
           </button>
           <button className='hover:bg-gray-200 dark:hover:bg-zinc-800 p-2 rounded-md'>
-            <Plus className='text-blue-400' size={24} />
+            <Plus className='text-sky-400' size={24} />
           </button>
-          <button className='hover:bg-gray-200 dark:hover:bg-zinc-800 p-2 rounded-md'>
-            <DotsThreeVertical className='text-blue-400' size={24} />
+          <button
+            onClick={() => setIsOptionsOpen(!isOptionsOpen)}
+            className='hover:bg-gray-200 dark:hover:bg-zinc-800 p-2 rounded-md'
+          >
+            <DotsThreeVertical className='text-sky-400' size={24} />
+          </button>
+        </div>
+
+        {/* options */}
+        <div
+          className={`transition-all delay-200 origin-top-right absolute top-12 right-0 rounded-md bg-zinc-800 py-2 ${
+            isOptionsOpen ? 'scale-100' : 'scale-0'
+          }`}
+        >
+          <Link
+            to='/profile'
+            className='flex items-center gap-2 text-sm text-gray-200 w-[120px] text-left p-2 px-4  hover:bg-gray-200 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-gray-200'
+          >
+            <UserCircle size={16} /> Profile
+          </Link>
+          <Link
+            to='/settings'
+            className='flex items-center gap-2 text-sm text-gray-200 w-[120px] text-left p-2 px-4  hover:bg-gray-200 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-gray-200'
+          >
+            <GearSix size={16} /> Settings
+          </Link>
+          <button
+            onClick={handleLogout}
+            className='flex items-center gap-2 text-sm text-gray-200 w-[120px] text-left p-2 px-4  hover:bg-gray-200 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-gray-200'
+          >
+            <SignOut size={16} /> Logout
           </button>
         </div>
       </div>
@@ -153,7 +207,7 @@ const ChatList = () => {
                 <SearchUserItem
                   key={user._id}
                   user={user}
-                  // handleChatSelect={handleChatSelect}
+                  handleUserSelect={handleChatCreateOrGet}
                 />
               );
             })}
