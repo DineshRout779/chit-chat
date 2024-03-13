@@ -59,7 +59,7 @@ const Login = () => {
               duration: 1,
             },
           }}
-          className='w-[90%] p-4 px-8 mx-auto max-w-[480px]'
+          className='w-full p-4 px-6 md:px-8 mx-auto max-w-[480px]'
         >
           <h1 className='text-2xl font-medium dark:text-gray-200'>Login</h1>
           <p className='text-sm dark:text-gray-400'>Login to continue </p>
@@ -84,9 +84,7 @@ const Login = () => {
               className='py-3 px-4 my-4 block w-full border outline-none border-gray-500 rounded-md text-sm focus:border-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-zinc-900 dark:border-gray-700 dark:text-gray-400 dark:focus:border-gray-600'
               placeholder='Enter password'
             />
-            <Link to='/forget-password' className='text-sm text-blue-400'>
-              Forgot password
-            </Link>
+
             <button
               type='submit'
               className='block p-2 my-4 w-full rounded-md bg-blue-600 text-white'
@@ -101,13 +99,14 @@ const Login = () => {
               Login as guest
             </button>
           </form>
-          <p className='dark:text-gray-200'>
-            Don&apos;t have an account?
-            <Link className='text-blue-600' to='/signup'>
-              {' '}
+          <div className='flex justify-between items-center'>
+            <Link to='/forget-password' className='text-sm text-blue-400'>
+              Forgot password
+            </Link>
+            <Link className='text-sm text-blue-400' to='/signup'>
               Create an account
             </Link>
-          </p>
+          </div>
         </motion.div>
       </div>
     </div>
