@@ -15,6 +15,7 @@ dotnev.config();
 
 // app initialization
 const app = express();
+const port = process.env.PORT || 3000;
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
@@ -101,8 +102,8 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(3000, () => {
+server.listen(port, () => {
   console.log(
-    '------------------------------------------------------\nServer running at http://localhost:3000'
+    `------------------------------------------------------\nServer running at http://localhost:${port}`
   );
 });
