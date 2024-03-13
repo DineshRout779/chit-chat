@@ -12,10 +12,8 @@ async function getAllUsers(req, res) {
       ? await User.find({
           _id: { $ne: req.user._id },
           username: new RegExp(req.query.username, 'i'),
-        }).select('_id username profilePic')
-      : await User.find({ _id: { $ne: req.user._id } }).select(
-          '_id username profilePic'
-        );
+        }).select('-password')
+      : await User.find({ _id: { $ne: req.user._id } }).select('-password');
 
     return res.status(200).json({
       success: true,

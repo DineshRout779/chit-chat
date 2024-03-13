@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 const SearchUserItem = ({ user, handleUserSelect }) => {
+  console.log('searched user: ', user);
   return (
     <li
       key={user._id}
