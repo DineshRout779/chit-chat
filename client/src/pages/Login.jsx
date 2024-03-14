@@ -1,44 +1,44 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import apiClient from '../services/apiClient';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 const Login = () => {
   const { state, loginUser } = useAuth();
   const navigate = useNavigate();
-  const [values, setValues] = useState({
-    username: '',
-    password: '',
+  const formik = useFormik({
+    initialValues: {
+      username: '',
+      password: '',
+    },
+    validationSchema: Yup.object({
+      username: Yup.string()
+        .min(4, 'Must be 4 characters or more')
+        .required('Required'),
+      password: Yup.string()
+        .min(5, 'Must be 5 characters or more')
+        .required('Required'),
+    }),
+    onSubmit: async (values) => {
+      try {
+        const res = await apiClient.post('/api/auth/login', values);
+        if (res.status === 200) {
+          loginUser(res.data.token);
+        }
+      } catch (error) {
+        console.log(error.response);
+      }
+    },
   });
-  const { username, password } = values;
-
-  const handleInputChange = (e) => {
-    setValues({
-      ...values,
-      [e.target.name]: e.target.value,
-    });
-  };
 
   const getGuestCredentials = () => {
-    setValues({
-      ...values,
+    formik.setValues({
       username: 'dinesh',
       password: '7*#kDp9@LnF2!wT',
     });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const res = await apiClient.post('/api/auth/login', values);
-      if (res.status === 200) {
-        loginUser(res.data.token);
-      }
-    } catch (error) {
-      console.log(error.response);
-    }
   };
 
   useEffect(() => {
@@ -63,27 +63,33 @@ const Login = () => {
         >
           <h1 className='text-2xl font-medium dark:text-gray-200'>Login</h1>
           <p className='text-sm dark:text-gray-400'>Login to continue </p>
-          <form className='block w-full' onSubmit={handleSubmit}>
+          <form className='block w-full' onSubmit={formik.handleSubmit}>
             <input
               type='text'
               name='username'
               id='username'
-              value={username}
-              onChange={handleInputChange}
+              value={formik.values.username}
+              onChange={formik.handleChange}
               className='py-3 px-4 my-4 block w-full border outline-none border-gray-500 rounded-md text-sm focus:border-blue-500  disabled:opacity-50 disabled:pointer-events-none dark:bg-zinc-900 dark:border-gray-700 dark:text-gray-400 dark:focus:border-gray-600'
               placeholder='Enter username'
             />
+            {formik.touched.username && formik.errors.username ? (
+              <p className='text-xs text-red-500'>{formik.errors.username}</p>
+            ) : null}
 
             {/* password */}
             <input
               type='password'
               name='password'
               id='password'
-              value={password}
-              onChange={handleInputChange}
+              value={formik.values.password}
+              onChange={formik.handleChange}
               className='py-3 px-4 my-4 block w-full border outline-none border-gray-500 rounded-md text-sm focus:border-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-zinc-900 dark:border-gray-700 dark:text-gray-400 dark:focus:border-gray-600'
               placeholder='Enter password'
             />
+            {formik.touched.password && formik.errors.password ? (
+              <p className='text-xs text-red-500'>{formik.errors.password}</p>
+            ) : null}
 
             <button
               type='submit'

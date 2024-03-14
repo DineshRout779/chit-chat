@@ -1,38 +1,41 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import apiClient from '../services/apiClient';
 import { motion } from 'framer-motion';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 const Signup = () => {
   const { state } = useAuth();
   const navigate = useNavigate();
-  const [values, setValues] = useState({
-    username: '',
-    email: '',
-    password: '',
-  });
-  const { username, email, password } = values;
-
-  const handleInputChange = (e) => {
-    setValues({
-      ...values,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const res = await apiClient.post('/api/auth/signup', values);
-      if (res.status === 201) {
-        navigate('/');
+  const formik = useFormik({
+    initialValues: {
+      username: '',
+      email: '',
+      password: '',
+    },
+    validationSchema: Yup.object({
+      username: Yup.string()
+        .min(4, 'Must be 4 characters or more')
+        .required('Required'),
+      email: Yup.string().required('Required').email('Invalid email address'),
+      password: Yup.string()
+        .min(5, 'Must be 5 characters or more')
+        .required('Required'),
+    }),
+    onSubmit: async (values) => {
+      console.log(values);
+      try {
+        const res = await apiClient.post('/api/auth/signup', values);
+        if (res.status === 201) {
+          navigate('/');
+        }
+      } catch (error) {
+        console.log(error.response);
       }
-    } catch (error) {
-      console.log(error.response);
-    }
-  };
+    },
+  });
 
   useEffect(() => {
     if (state.user) navigate('/chat');
@@ -58,39 +61,48 @@ const Signup = () => {
           <p className='text-sm dark:text-gray-400'>
             Create an account to get started
           </p>
-          <form className='block w-full' onSubmit={handleSubmit}>
+          <form className='block w-full' onSubmit={formik.handleSubmit}>
             {/* username */}
             <input
               type='text'
               name='username'
               id='username'
-              value={username}
-              onChange={handleInputChange}
+              value={formik.values.username}
+              onChange={formik.handleChange}
               className='py-3 px-4 my-4 block w-full border outline-none border-gray-500 rounded-md text-sm focus:border-blue-500  disabled:opacity-50 disabled:pointer-events-none dark:bg-zinc-900 dark:border-gray-700 dark:text-gray-400 dark:focus:border-gray-600'
               placeholder='Enter username'
             />
+            {formik.touched.username && formik.errors.username ? (
+              <p className='text-xs text-red-500'>{formik.errors.username}</p>
+            ) : null}
 
             {/* email */}
             <input
               type='email'
               name='email'
               id='email'
-              value={email}
-              onChange={handleInputChange}
+              value={formik.values.email}
+              onChange={formik.handleChange}
               className='py-3 px-4 my-4 block w-full border outline-none border-gray-500 rounded-md text-sm focus:border-blue-500  disabled:opacity-50 disabled:pointer-events-none dark:bg-zinc-900 dark:border-gray-700 dark:text-gray-400 dark:focus:border-gray-600'
               placeholder='Enter email'
             />
+            {formik.touched.email && formik.errors.email ? (
+              <p className='text-xs text-red-500'>{formik.errors.email}</p>
+            ) : null}
 
             {/* password */}
             <input
               type='password'
               name='password'
               id='password'
-              value={password}
-              onChange={handleInputChange}
+              value={formik.values.password}
+              onChange={formik.handleChange}
               className='py-3 px-4 my-4 block w-full border outline-none border-gray-500 rounded-md text-sm focus:border-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-zinc-900 dark:border-gray-700 dark:text-gray-400 dark:focus:border-gray-600'
               placeholder='Enter password'
             />
+            {formik.touched.password && formik.errors.password ? (
+              <p className='text-xs text-red-500'>{formik.errors.password}</p>
+            ) : null}
 
             <button
               type='submit'
