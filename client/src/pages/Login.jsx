@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import apiClient from '../services/apiClient';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const { state, loginUser } = useAuth();
@@ -26,9 +27,11 @@ const Login = () => {
       try {
         const res = await apiClient.post('/api/auth/login', values);
         if (res.status === 200) {
+          toast.success('Loggedin successfully');
           loginUser(res.data.token);
         }
       } catch (error) {
+        toast.error(error.response?.data?.message);
         console.log(error.response);
       }
     },

@@ -75,13 +75,19 @@ async function login(req, res) {
     // check if user exists, if not ==> send error
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(401).send('Invalid username or password');
+      return res.status(401).json({
+        success: false,
+        message: 'User does not exists',
+      });
     }
 
     // user exists ==> match password with the encrypted password
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      return res.status(401).send('Invalid username or password');
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials',
+      });
     }
 
     // generate jwt token
@@ -107,7 +113,7 @@ async function login(req, res) {
 }
 
 /**
- * Login handler
+ * Get Loggedin user
  * @param {Object} req - Request object containing username and password
  * @param {Object} res - Response object containing user data or an error message
  * @returns {Object} - Response object with user data or an error message

@@ -5,6 +5,7 @@ import apiClient from '../services/apiClient';
 import { motion } from 'framer-motion';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import toast from 'react-hot-toast';
 
 const Signup = () => {
   const { state } = useAuth();
@@ -29,9 +30,11 @@ const Signup = () => {
       try {
         const res = await apiClient.post('/api/auth/signup', values);
         if (res.status === 201) {
+          toast.success('Signup successfully');
           navigate('/');
         }
       } catch (error) {
+        toast.error(error.response?.data?.message || 'An error occurred');
         console.log(error.response);
       }
     },
