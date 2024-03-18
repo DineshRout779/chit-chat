@@ -11,7 +11,7 @@ import toast from 'react-hot-toast';
 const ForgetPassword = () => {
   const { state } = useAuth();
   const navigate = useNavigate();
-  const [otpGenerated, setOtpGenerated] = useState(true);
+  const [otpGenerated, setOtpGenerated] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [formDisabled, setFormDisabled] = useState(false);
   const [countdown, setCountdown] = useState(30);

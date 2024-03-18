@@ -1,6 +1,6 @@
 # Chit-chat
 
-A chat application built using React, nodejs and socket.io where users can send and receive messages one-to-one and group chat(under development 🔨).
+A chat application built using React, nodejs and socket.io where users can send and receive messages one-to-one, group chat and many more features.
 
 ## Features
 
@@ -25,7 +25,7 @@ A chat application built using React, nodejs and socket.io where users can send 
   - [ ] Promote and Demote to admin
 - [ ] Notification (for getting messages)
 - [ ] Settings (customizations)
-  - [ ] Show active status
+  - [ ] Toggle active status visibility
   - [ ] Customize theme
 - [x] Dark Mode
 - [ ] Search users and initiate chat
