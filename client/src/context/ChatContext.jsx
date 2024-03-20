@@ -26,9 +26,9 @@ const chatReducers = (state, action) => {
     case actionTypes.SELECT_CHAT:
       return {
         ...state,
-        selectedChat: state.chats.find(
-          (chat) => chat._id === action.payload.chatId
-        ),
+        selectedChat:
+          state?.chats?.find((chat) => chat._id === action.payload.chat?._id) ||
+          action.payload.chat,
       };
     case actionTypes.SET_MESSAGES:
       return {
@@ -90,8 +90,8 @@ const ChatProvider = ({ children }) => {
     dispatch({ type: actionTypes.NEW_MESSAGE, payload: message });
   };
 
-  const selectChat = (chatId) => {
-    dispatch({ type: actionTypes.SELECT_CHAT, payload: { chatId } });
+  const selectChat = (chat) => {
+    dispatch({ type: actionTypes.SELECT_CHAT, payload: { chat } });
   };
 
   const startLoading = () => {
@@ -173,6 +173,8 @@ const ChatProvider = ({ children }) => {
       dispatch({ type: actionTypes.RELOAD_SELECTEDCHAT });
     });
   }, []);
+
+  // console.log('state: ', state.chats, state.selectChat);
 
   return (
     <ChatContext.Provider

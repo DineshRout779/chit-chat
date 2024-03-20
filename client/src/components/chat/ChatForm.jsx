@@ -70,7 +70,7 @@ const ChatForm = () => {
         value={message}
         onChange={handleInputChange}
         onBlur={handleBlur}
-        className='py-3 px-4 block w-full border outline-none border-gray-500 rounded-md text-sm focus:border-blue-500  disabled:opacity-50 disabled:pointer-events-none dark:bg-zinc-900 dark:border-gray-700 dark:text-gray-400 dark:focus:border-gray-600'
+        className='py-3 px-4 block w-full border outline-none border-gray-300 rounded-md text-sm focus:border-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-zinc-900 dark:border-gray-700 dark:text-gray-400 dark:focus:border-gray-600'
       />
       <button className='bg-blue-500 p-3 border border-blue-500 text-sm px-4 rounded-md flex items-center gap-2 text-white'>
         <p className='hidden md:block'>Send</p> <PaperPlaneTilt size={16} />

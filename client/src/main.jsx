@@ -11,7 +11,6 @@ import ChatProvider from './context/ChatContext.jsx';
 import ForgetPassword from './pages/ForgetPassword.jsx';
 import ChatNotSelected from './pages/ChatNotSelected.jsx';
 import ChatDetailed from './pages/ChatDetailed.jsx';
-import React from 'react';
 import AuthProvider from './context/AuthContext.jsx';
 
 const router = createBrowserRouter([

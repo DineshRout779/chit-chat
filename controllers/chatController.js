@@ -70,4 +70,23 @@ async function getAllChats(req, res) {
   }
 }
 
-module.exports = { createChat, getAllChats };
+async function getChatById(req, res) {
+  try {
+    const chat = await Chat.findById(req.params.id);
+
+    if (!chat) {
+      return res.status(404).json({
+        success: false,
+        message: 'This chat does not exist.',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Chat fetched successfully!',
+      chat,
+    });
+  } catch (error) {}
+}
+
+module.exports = { createChat, getAllChats, getChatById };

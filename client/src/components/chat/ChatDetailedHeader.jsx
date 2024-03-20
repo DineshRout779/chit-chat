@@ -29,7 +29,7 @@ const ChatDetailedHeader = () => {
   };
 
   const getUserChattingWith = () => {
-    const id = selectedChat._id;
+    const id = selectedChat?._id;
     const chat = chats.find((chat) => chat?._id === id);
 
     return chat?.users?.find((c) => c?._id !== user?._id);
@@ -54,10 +54,10 @@ const ChatDetailedHeader = () => {
             className='cursor-pointer'
             onClick={() => handleProfileToggle(getUserChattingWith()._id)}
           >
-            <p> {getUserChattingWith().username} </p>{' '}
+            <p> {getUserChattingWith()?.username} </p>{' '}
           </div>
 
-          {getUserChattingWith().status === 'Online' ? (
+          {getUserChattingWith()?.status === 'Online' ? (
             isTyping ? (
               <p className='text-xs dark:text-zinc-400'>Typing</p>
             ) : (

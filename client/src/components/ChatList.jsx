@@ -36,9 +36,9 @@ const ChatList = () => {
     navigate('/');
   };
 
-  const handleChatSelect = (chatId) => {
-    selectChat(chatId);
-    navigate(`/chat/${chatId}`);
+  const handleChatSelect = (chat) => {
+    selectChat(chat);
+    navigate(`/chat/${chat._id}`);
   };
 
   const handleChatCreateOrGet = async (userId) => {
@@ -47,8 +47,11 @@ const ChatList = () => {
         selectedUserId: userId,
       });
 
-      if (res.status === 200) selectChat(res.data.chat._id);
-      navigate(`/chat/${res.data.chat._id}`);
+      if (res.status === 200) {
+        navigate(`/chat/${res.data.chat._id}`);
+        setQuery('');
+        setIsSearching(false);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -95,40 +98,46 @@ const ChatList = () => {
         {/* actions */}
         <div className='flex gap-2'>
           <button className='hover:bg-gray-200 dark:hover:bg-zinc-800 p-2 rounded-md'>
-            <CircleDashed className='text-sky-400' size={24} />
+            <CircleDashed
+              className='text-blue-600 dark:text-blue-400'
+              size={24}
+            />
           </button>
           <button className='hover:bg-gray-200 dark:hover:bg-zinc-800 p-2 rounded-md'>
-            <Plus className='text-sky-400' size={24} />
+            <Plus className='text-blue-600 dark:text-blue-400' size={24} />
           </button>
           <button
             onClick={() => setIsOptionsOpen(!isOptionsOpen)}
             className='hover:bg-gray-200 dark:hover:bg-zinc-800 p-2 rounded-md'
           >
-            <DotsThreeVertical className='text-sky-400' size={24} />
+            <DotsThreeVertical
+              className='text-blue-600 dark:text-blue-400'
+              size={24}
+            />
           </button>
         </div>
 
         {/* options */}
         <div
-          className={`transition-all delay-200 origin-top-right absolute top-12 right-0 rounded-md bg-zinc-800 py-2 ${
+          className={`transition-all delay-200 origin-top-right absolute top-12 right-0 rounded-md bg-white shadow-md dark:bg-zinc-800 py-2 ${
             isOptionsOpen ? 'scale-100' : 'scale-0'
           }`}
         >
           <Link
             to='/profile'
-            className='flex items-center gap-2 text-sm text-gray-200 w-[120px] text-left p-2 px-4  hover:bg-gray-200 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-gray-200'
+            className='flex items-center gap-2 text-sm dark:text-gray-200 w-[120px] text-left p-2 px-4 hover:bg-gray-200 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-gray-200'
           >
             <UserCircle size={16} /> Profile
           </Link>
           <Link
             to='/settings'
-            className='flex items-center gap-2 text-sm text-gray-200 w-[120px] text-left p-2 px-4  hover:bg-gray-200 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-gray-200'
+            className='flex items-center gap-2 text-sm dark:text-gray-200 w-[120px] text-left p-2 px-4 hover:bg-gray-200 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-gray-200'
           >
             <GearSix size={16} /> Settings
           </Link>
           <button
             onClick={handleLogout}
-            className='flex items-center gap-2 text-sm text-gray-200 w-[120px] text-left p-2 px-4  hover:bg-gray-200 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-gray-200'
+            className='flex items-center gap-2 text-sm dark:text-gray-200 w-[120px] text-left p-2 px-4 hover:bg-gray-200 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-gray-200'
           >
             <SignOut size={16} /> Logout
           </button>
@@ -146,17 +155,17 @@ const ChatList = () => {
           className='block w-full p-3 text-sm rounded-md bg-gray-200 dark:bg-zinc-800 dark:text-gray-200 border-zinc-800 outline-none focus:border-blue-600'
         />
         <button className='bg-gray-200 dark:bg-zinc-800 p-3 rounded-md'>
-          <FunnelSimple className='text-blue-400 text-start' />
+          <FunnelSimple className='text-blue-600 dark:text-blue-400 text-start' />
         </button>
       </div>
 
       {/* chat list */}
       {!isSearching ? (
-        <div className='overflow-y-auto h-[80vh] chat-history'>
+        <div className='overflow-y-auto h-[80vh] pr-2 chat-history'>
           {loading ? (
             <p className='dark:text-gray-200'>Loading...</p>
           ) : (
-            <ul className='pr-2'>
+            <ul className=''>
               {chats.map((chat) => {
                 const receiver = chat?.users?.find(
                   (participant) => participant?._id !== user?._id
@@ -165,8 +174,8 @@ const ChatList = () => {
                 return (
                   <li
                     key={chat?._id}
-                    onClick={() => handleChatSelect(chat?._id)}
-                    className='cursor-pointer rounded-md my-2 hover:bg-blue-500 dark:hover:bg-zinc-800 flex w-full gap-4 bg-white dark:bg-zinc-900 p-4'
+                    onClick={() => handleChatSelect(chat)}
+                    className='cursor-pointer rounded-md my-2 hover:bg-blue-500  dark:hover:bg-zinc-800 flex items-center w-full gap-4 bg-white dark:bg-zinc-900 p-4 text-gray-500 hover:text-gray-200'
                   >
                     <div className='relative inline-block'>
                       <img
@@ -184,10 +193,10 @@ const ChatList = () => {
                       ></span>
                     </div>
                     <div className=''>
-                      <h2 className='text-md dark:text-slate-300'>
+                      <h2 className='font-medium text-lg dark:text-slate-300'>
                         {receiver?.username}
                       </h2>
-                      <p className='text-gray-500 text-sm'>
+                      <p className='text-xs md:text-sm hover:text-gray-200'>
                         {chat?.latestMessage?.content ||
                           'Tap to start chatting...'}
                       </p>
@@ -199,9 +208,9 @@ const ChatList = () => {
           )}
         </div>
       ) : (
-        <div>
+        <div className='overflow-y-auto h-[80vh] chat-history pr-2'>
           <h2 className='dark:text-gray-200 '>Search results</h2>
-          <ul className='pr-2'>
+          <ul className='chat-history'>
             {searchResults.map((user) => {
               return (
                 <SearchUserItem
