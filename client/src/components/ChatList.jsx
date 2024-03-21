@@ -196,10 +196,22 @@ const ChatList = () => {
                       <h2 className='font-medium text-lg dark:text-slate-300'>
                         {receiver?.username}
                       </h2>
-                      <p className='text-xs md:text-sm hover:text-gray-200'>
-                        {chat?.latestMessage?.content ||
-                          'Tap to start chatting...'}
-                      </p>
+                      <div className='text-xs md:text-sm hover:text-gray-200'>
+                        {chat?.latestMessage ? (
+                          chat?.latestMessage?.isReadBy?.includes(user._id) ? (
+                            <span>{chat?.latestMessage?.content}</span>
+                          ) : (
+                            <p className='flex items-center gap-2'>
+                              <span className='bg-blue-600 rounded-full text-white w-4 h-4 flex justify-center items-center text-[8px]'>
+                                1
+                              </span>
+                              <span>{chat?.latestMessage?.content}</span>
+                            </p>
+                          )
+                        ) : (
+                          'Tap to start chatting...'
+                        )}
+                      </div>
                     </div>
                   </li>
                 );

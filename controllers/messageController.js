@@ -9,6 +9,7 @@ async function sendMessage(req, res) {
       chatId,
       content,
       sender: req.user._id,
+      isReadBy: [req.user._id],
     };
 
     let message = new Message(newMessage);

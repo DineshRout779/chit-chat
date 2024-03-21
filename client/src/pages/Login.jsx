@@ -50,7 +50,13 @@ const Login = () => {
 
   return (
     <div className='flex justify-center items-center'>
-      <div className='md:basis-1/2 bg-blue-600 min-h-screen'></div>
+      <div className='md:basis-1/2 bg-blue-600 min-h-screen flex justify-center items-center'>
+        <img
+          className='w-[80%]  block object-cover'
+          src='./login.svg'
+          alt='login'
+        />
+      </div>
       <div className='md:basis-1/2 w-full flex justify-center items-center bg-white/75 dark:bg-black/75 backdrop-blur-3xl min-h-screen'>
         <motion.div
           initial={{ opacity: 0 }}
@@ -64,7 +70,7 @@ const Login = () => {
           }}
           className='w-full p-4 px-6 md:px-8 mx-auto max-w-[480px]'
         >
-          <h1 className='text-2xl font-medium dark:text-gray-200'>Login</h1>
+          <h1 className='text-4xl text-blue-400 my-4 font-fenix'>Chatty</h1>{' '}
           <p className='text-sm dark:text-gray-400'>Login to continue </p>
           <form className='block w-full' onSubmit={formik.handleSubmit}>
             <input
