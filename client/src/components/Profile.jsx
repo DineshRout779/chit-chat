@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import apiClient from '../services/apiClient';
 import useChats from '../hooks/useChats';
 import { X } from 'phosphor-react';
+import useScreenWidth from '../hooks/useScreenWidth';
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
@@ -9,6 +10,7 @@ const Profile = () => {
     state: { selectedProfile },
     closeProfile,
   } = useChats();
+  const screenWidth = useScreenWidth();
 
   useEffect(() => {
     (async () => {
@@ -25,7 +27,11 @@ const Profile = () => {
   }, [selectedProfile]);
 
   return (
-    <div className='w-4/12 transition-all'>
+    <div
+      className={
+        screenWidth < 480 ? 'w-full transition-all' : 'w-4/12 transition-all'
+      }
+    >
       {/* user profile header */}
       <div className='p-4 border-b border-b-zinc-500/25 flex items-center gap-4'>
         <button

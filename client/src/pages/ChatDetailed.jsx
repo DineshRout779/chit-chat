@@ -6,6 +6,7 @@ import useChats from '../hooks/useChats';
 import { useEffect } from 'react';
 import Profile from '../components/Profile';
 import apiClient from '../services/apiClient';
+import useScreenWidth from '../hooks/useScreenWidth';
 
 const ChatDetailed = () => {
   const {
@@ -14,6 +15,7 @@ const ChatDetailed = () => {
     setChats,
   } = useChats();
   const { id } = useParams();
+  const screenWidth = useScreenWidth();
 
   useEffect(() => {
     if (!selectedChat && id) {
@@ -47,7 +49,11 @@ const ChatDetailed = () => {
     <div className='relative w-full h-full flex bg-white/90 dark:bg-black/75 backdrop-blur-3xl md:grow '>
       <div
         className={`transition-all border-r border-gray-200 dark:border-r-zinc-800 ${
-          selectedProfile ? 'w-8/12' : 'w-full'
+          selectedProfile
+            ? screenWidth > 480
+              ? 'w-8/12 transition-all'
+              : 'w-0 hidden transition-all'
+            : 'w-full transition-all'
         }`}
       >
         <ChatDetailedHeader />

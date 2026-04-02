@@ -104,6 +104,6 @@ io.on('connection', (socket) => {
 
 server.listen(port, () => {
   console.log(
-    `------------------------------------------------------\nServer running at http://localhost:${port}`
+    `------------------------------------------------------\nServer running at http://localhost:${port}`,
   );
 });

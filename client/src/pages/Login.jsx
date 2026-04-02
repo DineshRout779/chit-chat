@@ -107,7 +107,7 @@ const Login = () => {
               Login
             </button>
             <button
-              type='button'
+              type='submit'
               onClick={getGuestCredentials}
               className='block p-2 my-4 w-full rounded-md bg-gray-400 dark:bg-zinc-600 text-white'
             >

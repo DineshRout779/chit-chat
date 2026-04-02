@@ -5,29 +5,28 @@ async function sendMessage(req, res) {
   try {
     const { chatId, content } = req.body;
 
-    const newMessage = {
+    const newMessage = new Message({
       chatId,
       content,
       sender: req.user._id,
       isReadBy: [req.user._id],
-    };
+    });
 
-    let message = new Message(newMessage);
-    await message.save();
+    const savedMessage = await newMessage.save();
 
-    message = await Message.findById(message._id).populate(
+    await Chat.findByIdAndUpdate(chatId, { latestMessage: savedMessage });
+
+    const messageWithSender = await Message.findById(savedMessage._id).populate(
       'sender',
       '-password'
     );
 
-    await Chat.findByIdAndUpdate(chatId, { latestMessage: message });
-
     res.status(201).json({
       success: true,
-      message,
+      message: messageWithSender,
     });
   } catch (error) {
-    console.log('Error while sending messages');
+    console.error('Error while sending message:', error);
     res.status(500).json({
       message: 'Server error',
       error: error.message,
@@ -42,16 +41,13 @@ async function getAllMessagesByChatId(req, res) {
       '-password'
     );
 
-    if (!messages) {
-      throw Error('No Messages Found with the chatId: ', req.params.chatId);
-    }
-
+    // Return empty array if no messages are found
     return res.status(200).json({
       success: true,
-      messages,
+      messages: messages || [],
     });
   } catch (error) {
-    console.log('Error while getting all messages');
+    console.error('Error while getting all messages:', error);
     res.status(500).json({
       message: 'Server error',
       error: error.message,
