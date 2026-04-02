@@ -1,7 +1,7 @@
 const verifyAuthorization = async (req, res, next) => {
   try {
     const authorized =
-      req.profile && req.user && req.profile._id == req.user._id;
+      req.profile && req.user && req.profile._id.toString() === req.user._id.toString();
     if (!authorized) {
       return res.status(403).json({
         error: 'You are not authorized',

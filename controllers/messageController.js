@@ -5,9 +5,27 @@ async function sendMessage(req, res) {
   try {
     const { chatId, content } = req.body;
 
+    if (!content || typeof content !== 'string' || content.trim().length === 0) {
+      return res.status(400).json({ success: false, message: 'Message content is required' });
+    }
+
+    if (content.length > 2000) {
+      return res.status(400).json({ success: false, message: 'Message exceeds 2000 characters' });
+    }
+
+    const chat = await Chat.findById(chatId);
+    if (!chat) {
+      return res.status(404).json({ success: false, message: 'Chat not found' });
+    }
+
+    const isMember = chat.users.some((u) => u.toString() === req.user._id.toString());
+    if (!isMember) {
+      return res.status(403).json({ success: false, message: 'Access denied' });
+    }
+
     const newMessage = new Message({
       chatId,
-      content,
+      content: content.trim(),
       sender: req.user._id,
       isReadBy: [req.user._id],
     });
@@ -21,37 +39,32 @@ async function sendMessage(req, res) {
       '-password'
     );
 
-    res.status(201).json({
-      success: true,
-      message: messageWithSender,
-    });
+    res.status(201).json({ success: true, message: messageWithSender });
   } catch (error) {
-    console.error('Error while sending message:', error);
-    res.status(500).json({
-      message: 'Server error',
-      error: error.message,
-    });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 }
 
 async function getAllMessagesByChatId(req, res) {
   try {
+    const chat = await Chat.findById(req.params.chatId);
+    if (!chat) {
+      return res.status(404).json({ success: false, message: 'Chat not found' });
+    }
+
+    const isMember = chat.users.some((u) => u.toString() === req.user._id.toString());
+    if (!isMember) {
+      return res.status(403).json({ success: false, message: 'Access denied' });
+    }
+
     const messages = await Message.find({ chatId: req.params.chatId }).populate(
       'sender',
       '-password'
     );
 
-    // Return empty array if no messages are found
-    return res.status(200).json({
-      success: true,
-      messages: messages || [],
-    });
+    return res.status(200).json({ success: true, messages: messages || [] });
   } catch (error) {
-    console.error('Error while getting all messages:', error);
-    res.status(500).json({
-      message: 'Server error',
-      error: error.message,
-    });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 }
 

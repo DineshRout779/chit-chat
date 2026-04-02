@@ -16,10 +16,9 @@ const verifyLogin = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
+    return res.status(401).json({
       success: false,
-      error: error.message,
+      error: 'Invalid or expired token',
     });
   }
 };

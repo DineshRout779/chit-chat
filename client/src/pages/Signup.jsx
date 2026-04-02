@@ -26,7 +26,6 @@ const Signup = () => {
         .required('Required'),
     }),
     onSubmit: async (values) => {
-      console.log(values);
       try {
         const res = await apiClient.post('/api/auth/signup', values);
         if (res.status === 201) {

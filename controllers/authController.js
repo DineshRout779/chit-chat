@@ -4,8 +4,11 @@ const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const generateOTP = require('../utils/generateOTP');
 
-// store OTPs here
+// store OTPs here — { email: { otp, expiresAt } }
 const storedOTPs = {};
+// emails that completed OTP verification and may now reset password
+const verifiedEmails = new Set();
+const OTP_TTL_MS = 10 * 60 * 1000; // 10 minutes
 
 /**
  * Signup handler
@@ -160,14 +163,14 @@ async function forgetPassword(req, res) {
       },
     });
 
-    // TODO: store OTP for a limited time, then expire or delete it.
-    storedOTPs[email] = generateOTP();
+    storedOTPs[email] = { otp: generateOTP(), expiresAt: Date.now() + OTP_TTL_MS };
+    verifiedEmails.delete(email);
 
     const mailOptions = {
       from: process.env.APP_EMAIL,
       to: email,
       subject: 'Reset password | Chatty 💬',
-      text: `Your OTP to reset your password is ${storedOTPs[email]}`,
+      text: `Your OTP to reset your password is ${storedOTPs[email].otp}`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -206,18 +209,29 @@ async function verifyOTP(req, res) {
   try {
     const { otp, email } = req.body;
 
-    if (storedOTPs[email] && storedOTPs[email] === otp) {
-      return res.status(200).json({
-        success: true,
-        message: 'Verified, proceed to change password',
-      });
+    const record = storedOTPs[email];
+
+    if (!record) {
+      return res.status(400).json({ success: false, message: 'No OTP requested for this email' });
     }
-    return res.status(400).json({
-      sucess: false,
-      message: 'Invalid OTP',
+
+    if (Date.now() > record.expiresAt) {
+      delete storedOTPs[email];
+      return res.status(400).json({ success: false, message: 'OTP has expired' });
+    }
+
+    if (record.otp !== otp) {
+      return res.status(400).json({ success: false, message: 'Invalid OTP' });
+    }
+
+    delete storedOTPs[email];
+    verifiedEmails.add(email);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Verified, proceed to change password',
     });
   } catch (error) {
-    console.log('Error in verify password: ', error);
     return res.status(500).json({
       message: 'Server error',
       error: error.message,
@@ -234,19 +248,31 @@ async function verifyOTP(req, res) {
 async function resetPassword(req, res) {
   try {
     const { email, password } = req.body;
+
+    if (!verifiedEmails.has(email)) {
+      return res.status(403).json({
+        success: false,
+        message: 'OTP verification required before resetting password',
+      });
+    }
+
     const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'User not found' });
+    }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     user.password = hashedPassword;
     await user.save();
 
+    verifiedEmails.delete(email);
+
     return res.status(200).json({
       message: 'Password reset successful',
       success: true,
     });
   } catch (error) {
-    console.log('Error in reset password: ', error);
     return res.status(500).json({
       message: 'Server error',
       error: error.message,
@@ -254,9 +280,40 @@ async function resetPassword(req, res) {
   }
 }
 
+/**
+ * Guest login — logs in the designated guest account without exposing credentials to the client
+ */
+async function guestLogin(req, res) {
+  try {
+    const guestUsername = process.env.GUEST_USERNAME;
+    const guestPassword = process.env.GUEST_PASSWORD;
+
+    if (!guestUsername || !guestPassword) {
+      return res.status(503).json({ success: false, message: 'Guest login is not configured' });
+    }
+
+    const user = await User.findOne({ username: guestUsername });
+    if (!user) {
+      return res.status(503).json({ success: false, message: 'Guest account unavailable' });
+    }
+
+    const passwordMatch = await bcrypt.compare(guestPassword, user.password);
+    if (!passwordMatch) {
+      return res.status(503).json({ success: false, message: 'Guest account misconfigured' });
+    }
+
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+    return res.status(200).json({ message: 'Logged in as guest', token });
+  } catch (error) {
+    return res.status(500).json({ message: 'Server error', error: error.message });
+  }
+}
+
 module.exports = {
   signup,
   login,
+  guestLogin,
   getLoggedInUser,
   forgetPassword,
   verifyOTP,

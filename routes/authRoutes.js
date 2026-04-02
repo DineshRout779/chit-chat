@@ -5,6 +5,7 @@ const verifyLogin = require('../middlewares/verifyLogin');
 
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
+router.post('/guest-login', authController.guestLogin);
 router.post('/forget-password', authController.forgetPassword);
 router.post('/verify-otp', authController.verifyOTP);
 router.post('/reset-password', authController.resetPassword);

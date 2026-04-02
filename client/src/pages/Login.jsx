@@ -37,11 +37,16 @@ const Login = () => {
     },
   });
 
-  const getGuestCredentials = () => {
-    formik.setValues({
-      username: 'dinesh',
-      password: '7*#kDp9@LnF2!wT',
-    });
+  const loginAsGuest = async () => {
+    try {
+      const res = await apiClient.post('/api/auth/guest-login');
+      if (res.status === 200) {
+        toast.success('Logged in as guest');
+        loginUser(res.data.token);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Guest login unavailable');
+    }
   };
 
   useEffect(() => {
@@ -107,8 +112,8 @@ const Login = () => {
               Login
             </button>
             <button
-              type='submit'
-              onClick={getGuestCredentials}
+              type='button'
+              onClick={loginAsGuest}
               className='block p-2 my-4 w-full rounded-md bg-gray-400 dark:bg-zinc-600 text-white'
             >
               Login as guest

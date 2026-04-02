@@ -17,15 +17,18 @@ dotnev.config();
 const app = express();
 const port = process.env.PORT || 3000;
 const server = createServer(app);
+const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: clientUrl,
+    methods: ['GET', 'POST'],
   },
 });
 
 // setup middlewares
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: clientUrl }));
 app.use(morgan('dev'));
 
 // Database connection
