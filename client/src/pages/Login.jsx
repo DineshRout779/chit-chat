@@ -6,9 +6,11 @@ import apiClient from '../services/apiClient';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import toast from 'react-hot-toast';
+import { useState } from 'react';
 
 const Login = () => {
   const { state, loginUser } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -25,6 +27,7 @@ const Login = () => {
     }),
     onSubmit: async (values) => {
       try {
+        setIsLoading(true);
         const res = await apiClient.post('/api/auth/login', values);
         if (res.status === 200) {
           toast.success('Loggedin successfully');
@@ -32,22 +35,27 @@ const Login = () => {
         }
       } catch (error) {
         toast.error(error.response?.data?.message);
-        console.log(error.response);
+
+        if (error.response.data.code === 'EMAIL_NOT_VERIFIED') {
+          navigate(`/verify-email?email=${error.response.data.email}`);
+        }
+      } finally {
+        setIsLoading(false);
       }
     },
   });
 
-  const loginAsGuest = async () => {
-    try {
-      const res = await apiClient.post('/api/auth/guest-login');
-      if (res.status === 200) {
-        toast.success('Logged in as guest');
-        loginUser(res.data.token);
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Guest login unavailable');
-    }
-  };
+  // const loginAsGuest = async () => {
+  //   try {
+  //     const res = await apiClient.post('/api/auth/guest-login');
+  //     if (res.status === 200) {
+  //       toast.success('Logged in as guest');
+  //       loginUser(res.data.token);
+  //     }
+  //   } catch (error) {
+  //     toast.error(error.response?.data?.message || 'Guest login unavailable');
+  //   }
+  // };
 
   useEffect(() => {
     if (state.token) navigate('/chat');
@@ -107,17 +115,18 @@ const Login = () => {
 
             <button
               type='submit'
+              disabled={isLoading}
               className='block p-2 my-4 w-full rounded-md bg-blue-600 text-white'
             >
-              Login
+              {isLoading ? 'Logging in...' : 'Login'}
             </button>
-            <button
+            {/* <button
               type='button'
               onClick={loginAsGuest}
               className='block p-2 my-4 w-full rounded-md bg-gray-400 dark:bg-zinc-600 text-white'
             >
               Login as guest
-            </button>
+            </button> */}
           </form>
           <div className='flex justify-between items-center'>
             <Link to='/forget-password' className='text-sm text-blue-400'>

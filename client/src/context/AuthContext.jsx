@@ -7,6 +7,7 @@ import { getToken, isTokenExpired, removeToken } from '../utils/token';
 const intialState = {
   user: null,
   token: getToken() || null,
+  isLoading: false,
 };
 
 export const AuthContext = createContext(null);
@@ -17,11 +18,13 @@ const authReducers = (state, action) => {
       return {
         ...state,
         token: action.payload,
+        isLoading: true,
       };
     case actionTypes.STORE_USER:
       return {
         ...state,
         user: action.payload,
+        isLoading: false,
       };
     case actionTypes.LOGOUT:
       return {
