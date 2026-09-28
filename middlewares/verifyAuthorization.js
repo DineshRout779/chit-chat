@@ -1,20 +1,16 @@
-const verifyAuthorization = async (req, res, next) => {
-  try {
-    const authorized =
-      req.profile && req.user && req.profile._id.toString() === req.user._id.toString();
-    if (!authorized) {
-      return res.status(403).json({
-        error: 'You are not authorized',
-      });
-    }
-    next();
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+const AppError = require('../utils/AppError');
+
+// Ensures the logged-in user (req.user, set by verifyLogin) can only
+// act on their own profile (req.profile, set by the userId route param).
+const verifyAuthorization = (req, res, next) => {
+  const authorized =
+    req.profile && req.user && req.profile._id.toString() === req.user._id.toString();
+
+  if (!authorized) {
+    throw new AppError('You are not authorized', 403);
   }
+
+  next();
 };
 
 module.exports = verifyAuthorization;
