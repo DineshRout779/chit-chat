@@ -1,5 +1,5 @@
 import { PaperPlaneTilt } from 'phosphor-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import apiClient from '../../services/apiClient';
 import useChats from '../../hooks/useChats';
 import { socket } from '../../socket';
@@ -10,30 +10,28 @@ const ChatForm = () => {
     newMessage,
   } = useChats();
   const [message, setMessage] = useState('');
-  const [typing, setTyping] = useState(false);
+  const typingTimeoutRef = useRef(null);
+  const typingRef = useRef(false);
 
   const handleInputChange = (e) => {
     setMessage(e.target.value);
 
-    if (!typing) {
-      setTyping(true);
+    if (!typingRef.current) {
+      typingRef.current = true;
       socket.emit('typing', selectedChat._id);
     }
 
-    let lastTypingTime = new Date().getTime();
-    let timerLength = 3000;
-    setTimeout(() => {
-      let timeNow = new Date().getTime();
-      let timeDiff = timeNow - lastTypingTime;
-      if (timeDiff >= timerLength && typing) {
-        socket.emit('stop typing', selectedChat._id);
-        setTyping(false);
-      }
-    }, timerLength);
+    clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      socket.emit('stop typing', selectedChat._id);
+      typingRef.current = false;
+    }, 3000);
   };
 
   const handleBlur = () => {
+    clearTimeout(typingTimeoutRef.current);
     socket.emit('stop typing', selectedChat._id);
+    typingRef.current = false;
   };
 
   const handleSendMessage = async (e) => {
@@ -41,7 +39,7 @@ const ChatForm = () => {
 
     try {
       const res = await apiClient.post('/api/messages', {
-        chatId: selectedChat,
+        chatId: selectedChat._id,
         content: message,
       });
 

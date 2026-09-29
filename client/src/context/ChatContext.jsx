@@ -54,7 +54,7 @@ const chatReducers = (state, action) => {
       return {
         ...state,
         selectedChat: state.chats.find(
-          (chat) => chat._id === state.selectedChat?._id
+          (chat) => chat._id === state.selectedChat?._id,
         ),
       };
     case actionTypes.PROFILE_SELECTED:
@@ -142,7 +142,7 @@ const ChatProvider = ({ children }) => {
       (async () => {
         try {
           const res = await apiClient.get(
-            `/api/messages/${state.selectedChat._id}`
+            `/api/messages/${state.selectedChat._id}`,
           );
 
           setMessages(res.data.messages);
@@ -155,23 +155,41 @@ const ChatProvider = ({ children }) => {
   }, [state.selectedChat, state.refetch]);
 
   useEffect(() => {
-    socket.on('message received', (newMsg) => {
+    const handleMessageReceived = (newMsg) => {
       newMessage(newMsg);
-    });
+    };
+
+    socket.on('message received', handleMessageReceived);
+
+    return () => {
+      socket.off('message received', handleMessageReceived);
+    };
   }, []);
 
   useEffect(() => {
-    socket.on('userOnline', () => {
+    const handleUserOnline = () => {
       refresh();
       dispatch({ type: actionTypes.RELOAD_SELECTEDCHAT });
-    });
+    };
+
+    socket.on('userOnline', handleUserOnline);
+
+    return () => {
+      socket.off('userOnline', handleUserOnline);
+    };
   }, []);
 
   useEffect(() => {
-    socket.on('userOffline', () => {
+    const handleUserOffline = () => {
       refresh();
       dispatch({ type: actionTypes.RELOAD_SELECTEDCHAT });
-    });
+    };
+
+    socket.on('userOffline', handleUserOffline);
+
+    return () => {
+      socket.off('userOffline', handleUserOffline);
+    };
   }, []);
 
   // console.log('state: ', state.chats, state.selectChat);
