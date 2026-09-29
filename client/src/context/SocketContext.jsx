@@ -37,10 +37,16 @@ const SocketProvider = ({ children }) => {
   }, [user]);
 
   useEffect(() => {
-    socket.on('conn', (data) => {
+    const handleConn = (data) => {
       console.log('Connected ✅', data);
       dispatch({ type: actionTypes.CONNECT, payload: socket.connected });
-    });
+    };
+
+    socket.on('conn', handleConn);
+
+    return () => {
+      socket.off('conn', handleConn);
+    };
   }, []);
 
   useEffect(() => {

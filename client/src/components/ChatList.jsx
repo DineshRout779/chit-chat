@@ -2,14 +2,12 @@ import {
   CircleDashed,
   DotsThreeVertical,
   FunnelSimple,
-  GearSix,
   Plus,
   SignOut,
-  UserCircle,
 } from 'phosphor-react';
 import useChats from '../hooks/useChats';
 import { useAuth } from '../hooks/useAuth';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import apiClient from '../services/apiClient';
 import SearchUserItem from './SearchUserItem';
@@ -123,18 +121,6 @@ const ChatList = () => {
             isOptionsOpen ? 'scale-100' : 'scale-0'
           }`}
         >
-          <Link
-            to='/profile'
-            className='flex items-center gap-2 text-sm dark:text-gray-200 w-[120px] text-left p-2 px-4 hover:bg-gray-200 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-gray-200'
-          >
-            <UserCircle size={16} /> Profile
-          </Link>
-          <Link
-            to='/settings'
-            className='flex items-center gap-2 text-sm dark:text-gray-200 w-[120px] text-left p-2 px-4 hover:bg-gray-200 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-gray-200'
-          >
-            <GearSix size={16} /> Settings
-          </Link>
           <button
             onClick={handleLogout}
             className='flex items-center gap-2 text-sm dark:text-gray-200 w-[120px] text-left p-2 px-4 hover:bg-gray-200 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-gray-200'

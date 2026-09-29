@@ -1,4 +1,4 @@
-// import React from 'react';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
@@ -54,13 +54,13 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  // <React.StrictMode>
-  <AuthProvider>
-    <ChatProvider>
-      <SocketProvider>
-        <RouterProvider router={router} />
-      </SocketProvider>
-    </ChatProvider>
-  </AuthProvider>,
-  // </React.StrictMode>
+  <StrictMode>
+    <AuthProvider>
+      <ChatProvider>
+        <SocketProvider>
+          <RouterProvider router={router} />
+        </SocketProvider>
+      </ChatProvider>
+    </AuthProvider>
+  </StrictMode>,
 );

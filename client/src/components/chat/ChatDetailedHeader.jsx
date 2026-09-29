@@ -3,7 +3,7 @@ import useChats from '../../hooks/useChats';
 import { useEffect, useState } from 'react';
 import { socket } from '../../socket';
 import { useAuth } from '../../hooks/useAuth';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const ChatDetailedHeader = () => {
   const {
@@ -89,12 +89,15 @@ const ChatDetailedHeader = () => {
             isOptionsOpen ? 'scale-100' : 'scale-0'
           }`}
         >
-          <Link
-            to='/profile'
+          <button
+            onClick={() => {
+              handleProfileToggle(getUserChattingWith()._id);
+              setIsOptionsOpen(false);
+            }}
             className='block text-sm text-gray-200 w-[120px] text-left p-2 px-4  hover:bg-gray-200 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-gray-200'
           >
             View profile
-          </Link>
+          </button>
           <button className='block text-sm text-gray-200 w-[120px] text-left p-2 px-4  hover:bg-gray-200 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-gray-200'>
             Delete chat
           </button>
