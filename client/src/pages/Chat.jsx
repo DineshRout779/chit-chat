@@ -1,4 +1,3 @@
-// import Sidebar from '../components/Sidebar';
 import ChatContent from '../components/ChatContent';
 import { useAuth } from '../hooks/useAuth';
 import { useEffect } from 'react';
@@ -20,7 +19,6 @@ const Chat = () => {
 
   return (
     <div className='h-screen flex'>
-      {/* <Sidebar /> */}
       <ChatContent />
     </div>
   );

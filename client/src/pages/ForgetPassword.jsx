@@ -7,7 +7,6 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import toast from 'react-hot-toast';
 
-// TODO: Add toasts for interactive responses
 const ForgetPassword = () => {
   const { state } = useAuth();
   const navigate = useNavigate();

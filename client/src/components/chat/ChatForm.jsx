@@ -43,8 +43,6 @@ const ChatForm = () => {
         content: message,
       });
 
-      // console.log(res);
-
       if (res.status === 201) {
         setMessage('');
         newMessage(res.data.message);

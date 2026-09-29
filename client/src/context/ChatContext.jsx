@@ -192,8 +192,6 @@ const ChatProvider = ({ children }) => {
     };
   }, []);
 
-  // console.log('state: ', state.chats, state.selectChat);
-
   return (
     <ChatContext.Provider
       value={{
