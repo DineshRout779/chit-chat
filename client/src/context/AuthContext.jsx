@@ -67,13 +67,12 @@ export default function AuthProvider({ children }) {
   }, [state.token]);
 
   useEffect(() => {
-    if (state.token && isTokenExpired(state.token)) {
-      console.log('Token expired! Please login');
-      logout();
-      if (window.location.pathname !== '/') {
-        window.location.href = '/';
-      }
-    }
+    if (!state.token) return;
+    const check = () => {
+      if (isTokenExpired(state.token)) logout();
+    };
+    const interval = setInterval(check, 60_000);
+    return () => clearInterval(interval);
   }, [state.token]);
 
   return (
