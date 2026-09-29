@@ -12,6 +12,7 @@ import ForgetPassword from './pages/ForgetPassword.jsx';
 import ChatNotSelected from './pages/ChatNotSelected.jsx';
 import ChatDetailed from './pages/ChatDetailed.jsx';
 import AuthProvider from './context/AuthContext.jsx';
+import VerifyEmail from './pages/VerifyEmail.jsx';
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
       {
         path: 'forget-password',
         element: <ForgetPassword />,
+      },
+      {
+        path: 'verify-email',
+        element: <VerifyEmail />,
       },
       {
         path: '/signup',
@@ -56,6 +61,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <RouterProvider router={router} />
       </SocketProvider>
     </ChatProvider>
-  </AuthProvider>
+  </AuthProvider>,
   // </React.StrictMode>
 );

@@ -36,8 +36,16 @@ const ChatDetailedHeader = () => {
   };
 
   useEffect(() => {
-    socket.on('typing', () => setIsTyping(true));
-    socket.on('stop typing', () => setIsTyping(false));
+    const handleTyping = () => setIsTyping(true);
+    const handleStopTyping = () => setIsTyping(false);
+
+    socket.on('typing', handleTyping);
+    socket.on('stop typing', handleStopTyping);
+
+    return () => {
+      socket.off('typing', handleTyping);
+      socket.off('stop typing', handleStopTyping);
+    };
   }, []);
 
   return (

@@ -1,4 +1,5 @@
-const dotnev = require('dotenv');
+const dotenv = require('dotenv');
+dotenv.config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -9,9 +10,11 @@ const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messageRoute');
 const chatRoute = require('./routes/chatRoutes');
 const connectDB = require('./configs/db');
+const jwt = require('jsonwebtoken');
 const User = require('./models/User');
 const Chat = require('./models/Chat');
-dotnev.config();
+const notFound = require('./middlewares/notFound');
+const errorHandler = require('./middlewares/errorHandler');
 
 // app initialization
 const app = express();
@@ -23,7 +26,37 @@ const io = new Server(server, {
   cors: {
     origin: clientUrl,
     methods: ['GET', 'POST'],
+    credentials: true,
   },
+});
+io.use(async (socket, next) => {
+  try {
+    const token = socket.handshake.auth?.token;
+
+    if (!token) {
+      console.log('No token sent in socket');
+      return next(new Error('Authentication required'));
+    }
+
+    console.log('token in socket: ', token);
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded._id);
+
+    if (!user) {
+      return next(new Error('User not found'));
+    }
+
+    if (!user.isActive) {
+      return next(new Error('Account deactivated'));
+    }
+
+    socket.user = user;
+    next();
+  } catch (error) {
+    next(new Error('Invalid or expired token'));
+  }
 });
 
 // setup middlewares
@@ -40,14 +73,18 @@ app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/chats', chatRoute);
 
+// unmatched routes + centralized error handling — must come after all routes
+app.use(notFound);
+app.use(errorHandler);
+
 // ---------- socket -------------- //
 io.on('connection', (socket) => {
   let connectedUserId;
   let roomJoined;
 
   // setup: When a user logs in make a room,
-  socket.on('setup', async (userData) => {
-    connectedUserId = userData._id;
+  socket.on('setup', async () => {
+    connectedUserId = socket.user._id.toString();
     console.log('======connected=======', connectedUserId, '✅');
     socket.join(connectedUserId);
 

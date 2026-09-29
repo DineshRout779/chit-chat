@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken } from '../utils/token';
+import { getToken, removeToken } from '../utils/token';
 
 // Set up API client
 const apiClient = axios.create({
@@ -19,7 +19,7 @@ apiClient.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 //  Configure the API response
@@ -28,10 +28,15 @@ apiClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    let res = error.response;
-    console.error(`Looks like there was a problem. Status Code: ${res.status}`);
+    if (error.response?.status === 401) {
+      removeToken();
+    } else if (!error.response) {
+      console.error('Network error or no response from server');
+    } else {
+      console.error(`Request failed with status ${error.response.status}`);
+    }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default apiClient;

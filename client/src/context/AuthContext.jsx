@@ -7,6 +7,7 @@ import { getToken, isTokenExpired, removeToken } from '../utils/token';
 const intialState = {
   user: null,
   token: getToken() || null,
+  isLoading: false,
 };
 
 export const AuthContext = createContext(null);
@@ -17,11 +18,13 @@ const authReducers = (state, action) => {
       return {
         ...state,
         token: action.payload,
+        isLoading: true,
       };
     case actionTypes.STORE_USER:
       return {
         ...state,
         user: action.payload,
+        isLoading: false,
       };
     case actionTypes.LOGOUT:
       return {
@@ -64,13 +67,12 @@ export default function AuthProvider({ children }) {
   }, [state.token]);
 
   useEffect(() => {
-    if (state.token && isTokenExpired(state.token)) {
-      console.log('Token expired! Please login');
-      logout();
-      if (window.location.pathname !== '/') {
-        window.location.href = '/';
-      }
-    }
+    if (!state.token) return;
+    const check = () => {
+      if (isTokenExpired(state.token)) logout();
+    };
+    const interval = setInterval(check, 60_000);
+    return () => clearInterval(interval);
   }, [state.token]);
 
   return (
