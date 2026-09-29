@@ -18,7 +18,7 @@ const ForgetPassword = () => {
 
   const otpGenerationForm = useFormik({
     initialValues: {
-      email: 'dineshoutr@gmail.com',
+      email: '',
     },
     validationSchema: Yup.object({
       email: Yup.string().required('Required').email(),
